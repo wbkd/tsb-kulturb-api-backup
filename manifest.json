@@ -1,0 +1,64 @@
+{
+  "server": {
+    "port": "$env.PORT",
+    "routes": {
+      "cors": {
+        "origin": [
+          "*://localhost:*"
+        ]
+      }
+    },
+    "cache": {
+      "name": "cache",
+      "engine": "catbox-memory"
+    }
+  },
+  "register": {
+    "plugins": [
+      {
+        "plugin": "hapi-rate-limitor",
+        "options": {
+          "redis": "$env.REDIS_URL",
+          "namespace": "hapi-rate-limitor",
+          "enabled": false
+        }
+      },
+      {
+        "plugin": "./src/email",
+        "options": {
+          "host": "$env.SMTP_HOST",
+          "user": "$env.SMTP_USER",
+          "pass": "$env.SMTP_PASS"
+        }
+      },
+      {
+        "plugin": "./src/db",
+        "options": {
+          "url": "$env.MONGODB_URI"
+        }
+      },
+      "./src/auth",
+      "./src/json-ld",
+      {
+        "plugin": "./src/users",
+        "routes": {
+          "prefix": "/api/v1/users"
+        }
+      },
+      {
+        "plugin": "./src/organisations",
+        "routes": {
+          "prefix": "/api/v1/organisations"
+        }
+      },
+      {
+        "plugin": "hapi-pino",
+        "options": {
+          "prettyPrint": true,
+          "redact": ["req.headers.authorization"]
+        }
+      },
+      "blipp"
+    ]
+  }
+}
