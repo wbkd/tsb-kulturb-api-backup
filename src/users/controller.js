@@ -152,7 +152,7 @@ module.exports = class Controller {
     }
   }
 
-  async changeRole(request, h) {
+  changeRole(request, h) {
     const { email, role } = request.payload;
 
     try {
@@ -169,9 +169,16 @@ module.exports = class Controller {
     return this.service.findOne(email, populate);
   }
 
-  handleRelation(request, h) {
+  async handleRelation(request, h) {
     const { _id, relation, relId } = request.params;
 
-    return this.service.addRelation(_id, relation, relId);
+    if (request.method === 'put') {
+      await request.server.plugins[relation].service.addRelation(relId, 'users', _id);
+      return this.service.addRelation(_id, relation, relId);
+    }
+    if (request.method === 'delete') {
+      await request.server.plugins[relation].service.removeRelation(relId, 'users', _id);
+      return this.service.removeRelation(_id, relation, relId);
+    }
   }
 };

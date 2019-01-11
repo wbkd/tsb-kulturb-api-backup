@@ -1,10 +1,10 @@
 module.exports = class Service {
-  constructor(model) {
-    this.model = model;
+  constructor(db) {
+    this.db = db;
   }
 
   create(email, password, verificationToken, verificationExpiresAt, role = 'USER') {
-    return this.model.create({
+    return this.db.create({
       email,
       password,
       verificationToken,
@@ -14,13 +14,13 @@ module.exports = class Service {
   }
 
   findOne(email, populate = '') {
-    return this.model.findOne({ email })
+    return this.db.findOne({ email })
       .populate(populate)
       .lean();
   }
 
   update(instance, attributes) {
-    return this.model.updateOne(instance, attributes);
+    return this.db.updateOne(instance, attributes);
   }
 
   addRelation(_id, relation, relId) {
@@ -28,6 +28,14 @@ module.exports = class Service {
       [relation]: relId,
     };
 
-    return this.model.updateOne({ _id }, res);
+    return this.db.updateOne({ _id }, res);
+  }
+
+  async removeRelation(_id, relation, relId) {
+    const $unset = {
+      [relation]: relId,
+    };
+
+    return this.db.updateOne({ _id }, { $unset });
   }
 };

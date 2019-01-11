@@ -20,7 +20,7 @@ const register = (server, options) => {
 };
 
 exports.plugin = {
-  name: 'organisation',
+  name: 'organisations',
   version: '0.0.1',
   register,
   dependencies: ['auth'],

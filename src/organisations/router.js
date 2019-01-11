@@ -59,5 +59,18 @@ module.exports = (controller, validation) => [
         hapiAuthorization: { role: 'ADMIN' },
       },
     },
+  }, {
+    method: ['PUT', 'DELETE'],
+    path: '/{_id}/{relation}/{relId}',
+    handler: controller.handleRelation,
+    config: {
+      validate: {
+        params: validation.relation,
+      },
+      auth: 'jwt',
+      plugins: {
+        hapiAuthorization: { role: 'ADMIN' },
+      },
+    },
   },
 ];
