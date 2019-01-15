@@ -1,4 +1,3 @@
-const Boom = require('boom');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 
@@ -17,7 +16,7 @@ module.exports = class Controller {
 
     try {
       const user = await this.service.findOne(email);
-      if (user) return Boom.badRequest('Already Registered');
+      if (user) return h.badRequest('Already Registered');
 
       const hash = hashToken(password);
       const verificationToken = generateToken();
@@ -32,7 +31,7 @@ module.exports = class Controller {
       return { success: true };
     } catch (err) {
       console.error(err);
-      return Boom.badImplementation();
+      return h.badImplementation();
     }
   }
 
@@ -41,8 +40,8 @@ module.exports = class Controller {
 
     try {
       const user = await this.service.findOne(email);
-      if (!user) return Boom.unauthorized();
-      if (!user.verificationToken) return Boom.badRequest();
+      if (!user) return h.unauthorized();
+      if (!user.verificationToken) return h.badRequest();
 
       const verificationExpiresAt = calculateExpiration();
       await this.service.update({ email }, { $set: { verificationExpiresAt } });
@@ -50,7 +49,7 @@ module.exports = class Controller {
       return { success: true };
     } catch (err) {
       console.error(err);
-      return Boom.badImplementation();
+      return h.badImplementation();
     }
   }
 
@@ -59,19 +58,19 @@ module.exports = class Controller {
 
     try {
       const user = await this.service.findOne(email);
-      if (!user) return Boom.unauthorized();
+      if (!user) return h.unauthorized();
 
-      if (new Date(user.verificationExpiresAt) < new Date()) return Boom.unauthorized();
+      if (new Date(user.verificationExpiresAt) < new Date()) return h.unauthorized();
 
       const isValid = await compareToken(token, user.verificationToken);
-      if (!isValid) return Boom.unauthorized();
+      if (!isValid) return h.unauthorized();
 
       await this.service.update({ email }, { $unset: { verificationToken: 1 } });
 
       return { success: true };
     } catch (err) {
       console.error(err);
-      return Boom.badImplementation();
+      return h.badImplementation();
     }
   }
 
@@ -80,12 +79,12 @@ module.exports = class Controller {
 
     try {
       const user = await this.service.findOne(email);
-      if (!user) return Boom.unauthorized();
+      if (!user) return h.unauthorized();
 
-      if (user.verificationToken) return Boom.unauthorized('Please confirm your email address');
+      if (user.verificationToken) return h.unauthorized('Please confirm your email address');
 
       const isValid = await compareToken(password, user.password);
-      if (!isValid) return Boom.unauthorized();
+      if (!isValid) return h.unauthorized();
 
       const { _id, role } = user;
       const token = request.generateToken(_id, email, role);
@@ -97,7 +96,7 @@ module.exports = class Controller {
       };
     } catch (err) {
       console.error(err);
-      return Boom.badImplementation();
+      return h.badImplementation();
     }
   }
 
@@ -106,7 +105,7 @@ module.exports = class Controller {
 
     try {
       const user = await this.service.findOne(email);
-      if (!user) return Boom.unauthorized();
+      if (!user) return h.unauthorized();
 
       const passwordResetToken = generateToken();
       const resetTokenExpiresAt = calculateExpiration();
@@ -122,7 +121,7 @@ module.exports = class Controller {
       return { success: true };
     } catch (err) {
       console.error(err);
-      return Boom.badImplementation();
+      return h.badImplementation();
     }
   }
 
@@ -131,13 +130,13 @@ module.exports = class Controller {
 
     try {
       const user = await this.service.findOne(email);
-      if (!user) return Boom.unauthorized();
+      if (!user) return h.unauthorized();
 
-      if (!user.passwordResetToken) return Boom.unauthorized();
-      if (new Date(user.resetTokenExpiresAt) < new Date()) return Boom.unauthorized();
+      if (!user.passwordResetToken) return h.unauthorized();
+      if (new Date(user.resetTokenExpiresAt) < new Date()) return h.unauthorized();
 
       const isValid = await compareToken(token, user.passwordResetToken);
-      if (!isValid) return Boom.unauthorized();
+      if (!isValid) return h.unauthorized();
 
       const hash = hashToken(password);
       await this.service.update(
@@ -148,7 +147,7 @@ module.exports = class Controller {
       return { success: true };
     } catch (err) {
       console.error(err);
-      return Boom.badImplementation();
+      return h.badImplementation();
     }
   }
 
@@ -159,7 +158,7 @@ module.exports = class Controller {
       return this.service.update({ email }, { $set: { role } });
     } catch (err) {
       console.error(err);
-      return Boom.badImplementation();
+      return h.badImplementation();
     }
   }
 
@@ -176,7 +175,6 @@ module.exports = class Controller {
       return this.service.addRelation(_id, relation, relId);
     }
     if (request.method === 'delete') {
-      await request.server.plugins[relation].service.removeRelation(relId, 'users', _id);
       return this.service.removeRelation(_id, relation, relId);
     }
   }

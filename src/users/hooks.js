@@ -1,5 +1,4 @@
 const owasp = require('owasp-password-strength-test');
-const Boom = require('boom');
 
 const omitCredentials = async (request, h) => {
   const { response } = request;
@@ -21,7 +20,7 @@ const omitCredentials = async (request, h) => {
 const passwordStrength = async (request, h) => {
   const { password } = request.payload;
   const strength = owasp.test(password);
-  if (!strength.strong) return Boom.badRequest(strength.errors);
+  if (!strength.strong) return h.badRequest(strength.errors);
   return h.continue;
 };
 

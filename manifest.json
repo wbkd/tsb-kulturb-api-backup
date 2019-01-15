@@ -15,6 +15,7 @@
   },
   "register": {
     "plugins": [
+      "hapi-boom-decorators",
       {
         "plugin": "hapi-rate-limitor",
         "options": {

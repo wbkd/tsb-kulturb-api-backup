@@ -1,5 +1,3 @@
-const Boom = require('boom');
-
 const isOwnOrganisation = async (request, h) => {
   const { _id } = request.params;
   const { _id: userId, role } = request.auth.credentials;
@@ -11,7 +9,7 @@ const isOwnOrganisation = async (request, h) => {
 
   if (user.organisation.toString() === _id) return h.continue;
 
-  throw Boom.forbidden('You are not an organisation owner');
+  throw h.forbidden('You are not an organisation owner');
 };
 
 module.exports = isOwnOrganisation;
