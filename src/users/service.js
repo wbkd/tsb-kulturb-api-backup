@@ -19,7 +19,7 @@ module.exports = class Service {
   }
 
   update(instance, attributes) {
-    return this.db.updateOne(instance, attributes);
+    return this.db.findOneAndUpdate(instance, attributes, { new: true });
   }
 
   addRelation(_id, relation, relId) {
@@ -27,14 +27,14 @@ module.exports = class Service {
       [relation]: relId,
     };
 
-    return this.db.updateOne({ _id }, res);
+    return this.db.findByIdAndUpdate(_id, res, { new: true });
   }
 
-  async removeRelation(_id, relation, relId) {
+  removeRelation(_id, relation, relId) {
     const $unset = {
       [relation]: relId,
     };
 
-    return this.db.updateOne({ _id }, { $unset });
+    return this.db.findByIdAndUpdate(_id, { $unset }, { new: true });
   }
 };

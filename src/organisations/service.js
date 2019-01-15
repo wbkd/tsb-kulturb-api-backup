@@ -11,7 +11,7 @@ module.exports = class Organisation {
   }
 
   findById(_id) {
-    return this.db.findOne({ _id }).lean();
+    return this.db.findById(_id);
   }
 
   create(entry) {
@@ -19,10 +19,10 @@ module.exports = class Organisation {
   }
 
   update(_id, attributes) {
-    return this.db.updateOne({ _id }, attributes);
+    return this.db.findByIdAndUpdate(_id, attributes, { new: true });
   }
 
   remove(_id) {
-    return this.db.remove({ _id });
+    return this.db.findByIdAndDelete(_id);
   }
 };
