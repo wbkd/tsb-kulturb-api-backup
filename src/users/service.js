@@ -15,8 +15,7 @@ module.exports = class Service {
 
   findOne(email, populate = '') {
     return this.db.findOne({ email })
-      .populate(populate)
-      .lean();
+      .lean({ autopopulate: true });
   }
 
   update(instance, attributes) {

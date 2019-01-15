@@ -173,7 +173,6 @@ module.exports = class Controller {
     const { _id, relation, relId } = request.params;
 
     if (request.method === 'put') {
-      await request.server.plugins[relation].service.addRelation(relId, 'users', _id);
       return this.service.addRelation(_id, relation, relId);
     }
     if (request.method === 'delete') {

@@ -12,7 +12,7 @@ const User = new Schema({
   resetTokenExpiresAt: { type: Date },
   createdAt: { type: Date },
   role: { type: String, enum: ['ADMIN', 'USER'] },
-  organisation: { type: Schema.Types.ObjectId, ref: 'Organisation' },
+  organisation: { type: Schema.Types.ObjectId, ref: 'Organisation', autopopulate: true },
 });
 
 module.exports = mongoose.model('User', User);

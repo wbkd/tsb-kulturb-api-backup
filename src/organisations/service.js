@@ -25,20 +25,4 @@ module.exports = class Organisation {
   remove(_id) {
     return this.db.remove({ _id });
   }
-
-  addRelation(_id, relation, relId) {
-    const res = {
-      [relation]: relId,
-    };
-
-    return this.db.updateOne({ _id }, res);
-  }
-
-  removeRelation(_id, relation, relId) {
-    const $pull = {
-      [relation]: relId,
-    };
-
-    return this.db.updateOne({ _id }, { $pull });
-  }
 };

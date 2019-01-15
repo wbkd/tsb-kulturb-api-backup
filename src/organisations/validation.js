@@ -32,17 +32,10 @@ const remove = {
   _id,
 };
 
-const relation = {
-  _id: ObjectId.required(),
-  relation: Joi.string().valid(['users']).required(),
-  relId: ObjectId.required(),
-};
-
 module.exports = {
   find,
   findById,
   create,
   update,
   remove,
-  relation,
 };

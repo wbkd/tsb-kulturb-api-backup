@@ -1,4 +1,7 @@
 const mongoose = require('mongoose');
+const autopopulate = require('mongoose-autopopulate');
+
+mongoose.plugin(autopopulate);
 
 const register = async (server, options) => {
   const url = options.url || 'mongodb://localhost:27017/test';

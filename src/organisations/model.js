@@ -12,7 +12,17 @@ const Organisation = new Schema({
   zipcode: { type: Number },
   city: { type: String },
   // location
-  users: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+}, { toJSON: { virtuals: true } });
+
+Organisation.virtual('users', {
+  ref: 'User',
+  localField: '_id',
+  foreignField: 'organisation',
+  autopopulate: {
+    maxDepth: 1,
+    select: '-password -verificationToken -passwordResetToken -resetTokenExpiresAt -verificationTokenExpiresAt',
+  },
+});
 });
 
 module.exports = mongoose.model('Organisation', Organisation);
