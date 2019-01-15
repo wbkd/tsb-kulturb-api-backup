@@ -53,6 +53,12 @@
         }
       },
       {
+        "plugin": "./src/files",
+        "routes": {
+          "prefix": "/api/v1/files"
+        }
+      },
+      {
         "plugin": "hapi-pino",
         "options": {
           "prettyPrint": true,

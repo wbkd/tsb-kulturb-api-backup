@@ -23,6 +23,14 @@ Organisation.virtual('users', {
     select: '-password -verificationToken -passwordResetToken -resetTokenExpiresAt -verificationTokenExpiresAt',
   },
 });
+
+Organisation.virtual('images', {
+  ref: 'File',
+  localField: '_id',
+  foreignField: 'organisation',
+  autopopulate: {
+    maxDepth: 1,
+  },
 });
 
 module.exports = mongoose.model('Organisation', Organisation);
