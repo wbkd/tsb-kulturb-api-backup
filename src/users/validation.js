@@ -7,9 +7,11 @@ const token = Joi.string().required();
 const ObjectId = Joi.string().regex(/^[0-9a-fA-F]{24}$/);
 
 const create = {
-  email,
-  password,
-  firstname,
+  payload: {
+    email,
+    password,
+    firstname,
+  },
 };
 
 const find = {
@@ -18,20 +20,26 @@ const find = {
 };
 
 const verify = {
-  email,
-  token,
+  query: {
+    email,
+    token,
+  },
 };
 
 const changePassword = {
-  email,
-  token,
-  password,
+  payload: {
+    email,
+    token,
+    password,
+  },
 };
 
 const relation = {
-  _id: ObjectId.required(),
-  relation: Joi.string().valid(['organisation']).required(),
-  relId: ObjectId.required(),
+  params: {
+    _id: ObjectId.required(),
+    relation: Joi.string().valid(['organisation']).required(),
+    relId: ObjectId.required(),
+  },
 };
 
 module.exports = {

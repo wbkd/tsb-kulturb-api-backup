@@ -7,7 +7,9 @@ const location = Joi.array().length(2).items(Joi.number());
 const description = Joi.string();
 
 const findById = {
-  _id,
+  params: {
+    _id,
+  },
 };
 
 const find = {
@@ -17,19 +19,25 @@ const find = {
 };
 
 const create = {
-  name: name.required(),
-  location,
-  description,
+  payload: {
+    name: name.required(),
+    location,
+    description,
+  },
 };
 
 const update = {
-  name,
-  location,
-  description,
+  payload: {
+    name,
+    location,
+    description,
+  },
 };
 
 const remove = {
-  _id,
+  params: {
+    _id,
+  },
 };
 
 module.exports = {

@@ -11,9 +11,7 @@ module.exports = (controller, validation) => [
     path: '/',
     handler: controller.signup,
     config: {
-      validate: {
-        payload: validation.create,
-      },
+      validate: validation.create,
       auth: false,
       plugins: {
         policies: ['passwordStrength'],
@@ -24,9 +22,7 @@ module.exports = (controller, validation) => [
     path: '/verify',
     handler: controller.verify,
     config: {
-      validate: {
-        query: validation.verify,
-      },
+      validate: validation.verify,
       auth: false,
     },
   }, {
@@ -34,9 +30,7 @@ module.exports = (controller, validation) => [
     path: '/login',
     handler: controller.login,
     config: {
-      validate: {
-        payload: validation.login,
-      },
+      // validate: validation.login,
       auth: false,
       plugins: {
         'hapi-rate-limitor': {
@@ -71,9 +65,7 @@ module.exports = (controller, validation) => [
     path: '/change-password',
     handler: controller.changePassword,
     config: {
-      validate: {
-        payload: validation.changePassword,
-      },
+      validate: validation.changePassword,
       auth: false,
       plugins: {
         'hapi-rate-limitor': {
@@ -89,9 +81,7 @@ module.exports = (controller, validation) => [
     path: '/change-role',
     handler: controller.changeRole,
     config: {
-      validate: {
-        payload: validation.changeRole,
-      },
+      // validate: validation.changeRole,
       auth: 'jwt',
       plugins: {
         hapiAuthorization: { role: 'ADMIN' },
@@ -102,12 +92,10 @@ module.exports = (controller, validation) => [
     path: '/{_id}/{relation}/{relId}',
     handler: controller.handleRelation,
     config: {
-      validate: {
-        params: validation.relation,
-      },
+      validate: validation.relation,
       auth: 'jwt',
       plugins: {
-        hapiAuthorization: { role: 'ADMIN' },
+        hapiAuthorization: { role: 'USER' },
       },
     },
   },

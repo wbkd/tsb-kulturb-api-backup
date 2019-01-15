@@ -11,9 +11,7 @@ module.exports = (controller, validation) => [
     path: '/{_id}',
     handler: controller.findById,
     config: {
-      validate: {
-        params: validation.findById,
-      },
+      validate: validation.findById,
       auth: false,
       plugins: {
         policies: ['json-ld'],
@@ -24,9 +22,7 @@ module.exports = (controller, validation) => [
     path: '/',
     handler: controller.create,
     config: {
-      validate: {
-        payload: validation.create,
-      },
+      validate: validation.create,
       auth: 'jwt',
       plugins: {
         hapiAuthorization: { role: 'ADMIN' },
@@ -37,9 +33,7 @@ module.exports = (controller, validation) => [
     path: '/{_id}',
     handler: controller.update,
     config: {
-      validate: {
-        payload: validation.update,
-      },
+      validate: validation.update,
       auth: 'jwt',
       plugins: {
         hapiAuthorization: { role: 'USER' },
@@ -51,9 +45,7 @@ module.exports = (controller, validation) => [
     path: '/{_id}',
     handler: controller.remove,
     config: {
-      validate: {
-        params: validation.remove,
-      },
+      validate: validation.remove,
       auth: 'jwt',
       plugins: {
         hapiAuthorization: { role: 'ADMIN' },
