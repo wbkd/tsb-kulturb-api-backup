@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 
 const File = new Schema({
   filename: { type: String, required: true },
-  url: { type: String, required: true },
+  url: { type: String, required: true, unique: true },
   type: {
     type: String,
     enum: ['logo', 'image'],
