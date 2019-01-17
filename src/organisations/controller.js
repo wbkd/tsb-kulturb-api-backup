@@ -10,6 +10,10 @@ module.exports = class Controller {
 
   findById(request, h) {
     const { _id } = request.params;
+    const { accept } = request.headers;
+    if (accept === 'application/ld+json') {
+      return this.service.findByIdAsJSONLD(_id);
+    }
     return this.service.findById(_id);
   }
 

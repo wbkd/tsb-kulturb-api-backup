@@ -39,7 +39,6 @@
         }
       },
       "./src/auth",
-      "./src/json-ld",
       {
         "plugin": "./src/users",
         "routes": {

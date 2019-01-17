@@ -7,11 +7,15 @@ module.exports = class Organisation {
     const query = this.db.find(props);
     if (options.limit) query.limit(options.limit);
     if (options.skip) query.skip(options.skip);
-    return query.lean();
+    return query;
   }
 
   findById(_id) {
     return this.db.findById(_id);
+  }
+
+  findByIdAsJSONLD(_id) {
+    return this.db.serializeJSONLD(_id);
   }
 
   create(entry) {

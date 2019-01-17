@@ -13,9 +13,6 @@ module.exports = (controller, validation) => [
     config: {
       validate: validation.findById,
       auth: false,
-      plugins: {
-        policies: ['json-ld'],
-      },
     },
   }, {
     method: 'POST',

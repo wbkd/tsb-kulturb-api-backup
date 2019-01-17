@@ -38,4 +38,40 @@ Organisation.virtual('images', {
   },
 });
 
+async function serializeJSONLD(_id) {
+  const entry = await this.model('Organisation').findById(_id).lean({ autopopulate: true });
+  const res = {
+    '@context': 'http://schema.org',
+    '@type': 'Organisation',
+    '@id': entry._id,
+    name: entry.name,
+    description: entry.description,
+    website: entry.website,
+    sameAs: entry.website,
+    email: entry.email,
+    telephone: entry.telephone,
+  };
+
+  const logo = entry.images.find(image => image.type === 'logo');
+  if (logo) {
+    res.logo = logo.url;
+  }
+
+  if (entry.address) {
+    res.location = {
+      '@type': 'Place',
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: entry.city,
+        postalCode: entry.zipcode,
+        streetAddress: entry.address,
+      },
+    };
+  }
+
+  return res;
+}
+
+Organisation.statics.serializeJSONLD = serializeJSONLD;
+
 module.exports = mongoose.model('Organisation', Organisation);
