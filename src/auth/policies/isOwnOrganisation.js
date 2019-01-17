@@ -20,13 +20,30 @@ const isOwnOrganisation = async (request, h) => {
   if (request.path.includes('/file')) {
     if (request.method === 'post') {
       const { relation, relId } = request.payload;
-      if (user[relation]._id.toString() === relId) return h.continue;
+      if (relation === 'organisation') {
+        if (user[relation]._id.toString() === relId) return h.continue;
+      } else if (relation === 'venue') {
+        const match = user.organisation.venues
+          .find(venue => venue._id.toString() === relId);
+        if (match) return h.continue;
+      }
     }
     if (request.method === 'delete') {
       const { File } = request.models;
       const file = await File.findById(_id);
       if (!file) throw h.notFound();
-      if (user.organisation._id.toString() === file.organisation._id.toString()) return h.continue;
+
+      if (file.organisation) {
+        if (user.organisation._id.toString() === file.organisation._id.toString()) {
+          return h.continue;
+        }
+      } else if (file.venue) {
+        const match = user.organisation.venues
+          .find(venue => venue._id.toString() === file.venue._id.toString());
+        if (match) {
+          return h.continue;
+        }
+      }
     }
   }
 

@@ -13,9 +13,6 @@ module.exports = (controller, validation) => [
     config: {
       validate: validation.findById,
       auth: false,
-      plugins: {
-        policies: ['json-ld'],
-      },
     },
   }, {
     method: 'POST',
@@ -49,17 +46,6 @@ module.exports = (controller, validation) => [
       auth: 'jwt',
       plugins: {
         hapiAuthorization: { role: 'ADMIN' },
-      },
-    },
-  }, {
-    method: ['PUT', 'DELETE'],
-    path: '/{_id}/{relation}/{relId}',
-    handler: controller.handleRelation,
-    config: {
-      validate: validation.relation,
-      auth: 'jwt',
-      plugins: {
-        hapiAuthorization: { role: 'USER' },
       },
     },
   },

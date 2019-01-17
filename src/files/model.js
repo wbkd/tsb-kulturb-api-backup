@@ -10,12 +10,24 @@ const File = new Schema({
     enum: ['logo', 'image'],
     required: true,
   },
-  organisation: {
-    type: Schema.Types.ObjectId,
-    ref: 'Organisation',
-    autopopulate: true,
-    required: true,
-  },
-});
+}, { discriminatorKey: 'relation', timestamps: true });
 
-module.exports = mongoose.model('File', File);
+const model = mongoose.model('File', File);
+
+model.discriminator('organisation',
+  new Schema({
+    organisation: {
+      type: Schema.Types.ObjectId,
+      ref: 'Organisation',
+    },
+  }));
+
+model.discriminator('venue',
+  new Schema({
+    venue: {
+      type: Schema.Types.ObjectId,
+      ref: 'Venue',
+    },
+  }));
+
+module.exports = model;

@@ -40,19 +40,10 @@ const remove = {
   },
 };
 
-const relation = {
-  params: {
-    _id: ObjectId.required(),
-    relation: Joi.string().valid(['venues']).required(),
-    relId: ObjectId.required(),
-  },
-};
-
 module.exports = {
   find,
   findById,
   create,
   update,
   remove,
-  relation,
 };

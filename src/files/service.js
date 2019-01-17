@@ -42,6 +42,7 @@ module.exports = class Upload {
       filename,
       url,
       type,
+      relation,
       [relation]: relId,
     });
   }

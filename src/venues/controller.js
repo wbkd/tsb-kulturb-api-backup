@@ -10,6 +10,10 @@ module.exports = class Controller {
 
   findById(request, h) {
     const { _id } = request.params;
+    const { accept } = request.headers;
+    if (accept === 'application/ld+json') {
+      return this.service.findByIdAsJSONLD(_id);
+    }
     return this.service.findById(_id);
   }
 
@@ -27,16 +31,5 @@ module.exports = class Controller {
   remove(request, h) {
     const { _id } = request.params;
     return this.service.remove(_id);
-  }
-
-  handleRelation(request, h) {
-    const { _id, relation, relId } = request.params;
-
-    if (request.method === 'put') {
-      return this.service.addRelation(_id, relation, relId);
-    }
-    if (request.method === 'delete') {
-      return this.service.removeRelation(_id, relation, relId);
-    }
   }
 };

@@ -11,7 +11,12 @@ const Organisation = new Schema({
   address: { type: Date },
   zipcode: { type: Number },
   city: { type: String },
-  // location
+  venues: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Venue',
+    autopopulate: true,
+    unique: true,
+  }],
 }, { toJSON: { virtuals: true } });
 
 Organisation.virtual('users', {
