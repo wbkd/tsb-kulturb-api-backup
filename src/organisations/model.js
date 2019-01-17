@@ -2,6 +2,18 @@ const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 
+const pointSchema = new Schema({
+  type: {
+    type: String,
+    enum: ['Point'],
+    required: true,
+  },
+  coordinates: {
+    type: [Number],
+    required: true,
+  },
+});
+
 const Organisation = new Schema({
   name: { type: String, required: true, index: { unique: true } },
   description: { type: String },
@@ -11,6 +23,7 @@ const Organisation = new Schema({
   address: { type: Date },
   zipcode: { type: Number },
   city: { type: String },
+  location: { type: pointSchema },
   venues: [{
     type: Schema.Types.ObjectId,
     ref: 'Venue',
@@ -18,6 +31,8 @@ const Organisation = new Schema({
     unique: true,
   }],
 }, { toJSON: { virtuals: true } });
+
+Organisation.index({ location: '2dsphere' });
 
 Organisation.virtual('users', {
   ref: 'User',
