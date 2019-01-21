@@ -53,6 +53,7 @@ module.exports = (controller, validation) => [
         payload: { email: validation.email },
       },
       auth: false,
+      tags: ['api'],
     },
   }, {
     method: 'POST',
@@ -63,6 +64,7 @@ module.exports = (controller, validation) => [
         payload: { email: validation.email },
       },
       auth: false,
+      tags: ['api'],
     },
   }, {
     method: 'POST',
@@ -71,6 +73,7 @@ module.exports = (controller, validation) => [
     config: {
       validate: validation.changePassword,
       auth: false,
+      tags: ['api'],
       plugins: {
         'hapi-rate-limitor': {
           max: 10,
@@ -87,6 +90,7 @@ module.exports = (controller, validation) => [
     config: {
       // validate: validation.changeRole,
       auth: 'jwt',
+      tags: ['api'],
       plugins: {
         hapiAuthorization: { role: 'ADMIN' },
       },
@@ -98,6 +102,7 @@ module.exports = (controller, validation) => [
     config: {
       validate: validation.relation,
       auth: 'jwt',
+      tags: ['api'],
       plugins: {
         hapiAuthorization: { role: 'ADMIN' },
       },
