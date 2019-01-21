@@ -168,7 +168,7 @@ module.exports = class Controller {
     return this.service.findOne(email, populate);
   }
 
-  async handleRelation(request, h) {
+  handleRelation(request, h) {
     const { _id, relation, relId } = request.params;
 
     if (request.method === 'put') {

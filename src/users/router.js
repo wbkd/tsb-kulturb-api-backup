@@ -95,7 +95,7 @@ module.exports = (controller, validation) => [
       validate: validation.relation,
       auth: 'jwt',
       plugins: {
-        hapiAuthorization: { role: 'USER' },
+        hapiAuthorization: { role: 'ADMIN' },
       },
     },
   },
