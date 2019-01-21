@@ -10,6 +10,7 @@ module.exports = (controller, validation) => [
         maxBytes: 10 * (1024 * 1024), // 10 MB
       },
       validate: validation.create,
+      tags: ['api'],
       plugins: {
         hapiAuthorization: { role: 'USER' },
         policies: ['isOwnOrganisation'],
@@ -22,6 +23,7 @@ module.exports = (controller, validation) => [
     config: {
       validate: validation.remove,
       auth: 'jwt',
+      tags: ['api'],
       plugins: {
         hapiAuthorization: { role: 'USER' },
         policies: ['isOwnOrganisation'],

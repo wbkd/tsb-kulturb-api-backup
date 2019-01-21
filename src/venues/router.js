@@ -5,6 +5,7 @@ module.exports = (controller, validation) => [
     handler: controller.find,
     config: {
       auth: false,
+      tags: ['api'],
     },
   }, {
     method: 'GET',
@@ -13,6 +14,7 @@ module.exports = (controller, validation) => [
     config: {
       validate: validation.findById,
       auth: false,
+      tags: ['api'],
     },
   }, {
     method: 'POST',
@@ -21,6 +23,7 @@ module.exports = (controller, validation) => [
     config: {
       validate: validation.create,
       auth: 'jwt',
+      tags: ['api'],
       plugins: {
         hapiAuthorization: { role: 'ADMIN' },
       },
@@ -32,6 +35,7 @@ module.exports = (controller, validation) => [
     config: {
       validate: validation.update,
       auth: 'jwt',
+      tags: ['api'],
       plugins: {
         hapiAuthorization: { role: 'USER' },
         policies: ['isOwnOrganisation'],
@@ -43,6 +47,7 @@ module.exports = (controller, validation) => [
     handler: controller.remove,
     config: {
       validate: validation.remove,
+      tags: ['api'],
       auth: 'jwt',
       plugins: {
         hapiAuthorization: { role: 'ADMIN' },

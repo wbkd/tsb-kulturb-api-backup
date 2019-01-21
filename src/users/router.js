@@ -5,6 +5,7 @@ module.exports = (controller, validation) => [
     handler: controller.info,
     config: {
       auth: 'jwt',
+      tags: ['api'],
     },
   }, {
     method: 'POST',
@@ -13,6 +14,7 @@ module.exports = (controller, validation) => [
     config: {
       validate: validation.create,
       auth: false,
+      tags: ['api'],
       plugins: {
         policies: ['passwordStrength'],
       },
@@ -24,6 +26,7 @@ module.exports = (controller, validation) => [
     config: {
       validate: validation.verify,
       auth: false,
+      tags: ['api'],
     },
   }, {
     method: 'POST',
@@ -32,6 +35,7 @@ module.exports = (controller, validation) => [
     config: {
       // validate: validation.login,
       auth: false,
+      tags: ['api'],
       plugins: {
         'hapi-rate-limitor': {
           max: 10,

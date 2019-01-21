@@ -70,6 +70,9 @@
           "redact": ["req.headers.authorization"]
         }
       },
+      "inert",
+      "vision",
+      "hapi-swagger",
       "blipp"
     ]
   }
