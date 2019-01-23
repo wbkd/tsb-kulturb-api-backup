@@ -3,19 +3,25 @@ module.exports = class Service {
     this.db = db;
   }
 
-  create(email, password, verificationToken, verificationExpiresAt, role = 'USER') {
+  create({
+    email,
+    password,
+    verificationToken,
+    verificationExpiresAt,
+    role = 'USER',
+  }) {
     return this.db.create({
       email,
       password,
       verificationToken,
+      verificationExpiresAt,
       createdAt: new Date(),
       role,
     });
   }
 
   findOne(email, populate = '') {
-    return this.db.findOne({ email })
-      .lean({ autopopulate: true });
+    return this.db.findOne({ email });
   }
 
   update(instance, attributes) {

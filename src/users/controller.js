@@ -26,7 +26,12 @@ module.exports = class Controller {
       // @TODO: the verification token should expires
       const hashedToken = hashToken(verificationToken);
       const verificationExpiresAt = calculateExpiration();
-      await this.service.create(email, hash, hashedToken, verificationExpiresAt, 'USER');
+      await this.service.create({
+        email,
+        password: hash,
+        verificationToken: hashedToken,
+        verificationExpiresAt,
+      });
 
       return { success: true };
     } catch (err) {

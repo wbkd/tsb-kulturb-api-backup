@@ -5,8 +5,7 @@ const hooks = require('./hooks');
 const model = require('./model');
 const validation = require('./validation');
 
-const register = (server, options) => {
-
+const register = async (server, options) => {
   // init service
   const service = new Service(model);
 
@@ -23,6 +22,22 @@ const register = (server, options) => {
   server.plugins.mrhorse.addPolicy('passwordStrength', hooks.passwordStrength);
 
   server.expose('service', service);
+
+  // create default admin
+  if (options.admin) {
+    const { email, password } = options.admin;
+    if (email && password) {
+      try {
+        await service.create({
+          email,
+          password,
+          role: 'ADMIN',
+        });
+      } catch (err) {
+        console.log('Admin already exists');
+      }
+    }
+  }
 };
 
 exports.plugin = {
