@@ -22,7 +22,7 @@ const Venue = new Schema({
   telephone: { type: String },
   openingHours: { type: String },
   maximumAttendeeCapacity: { type: Number },
-  address: { type: Date },
+  address: { type: String },
   zipcode: { type: Number },
   city: { type: String },
   location: { type: pointSchema },

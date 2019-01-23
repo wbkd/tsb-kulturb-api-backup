@@ -20,7 +20,7 @@ const Organisation = new Schema({
   website: { type: String },
   email: { type: String },
   telephone: { type: String },
-  address: { type: Date },
+  address: { type: String },
   zipcode: { type: Number },
   city: { type: String },
   location: { type: pointSchema },
