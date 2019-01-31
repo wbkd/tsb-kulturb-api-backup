@@ -5,6 +5,12 @@ const _id = ObjectId.required();
 const name = Joi.string();
 const location = Joi.array().length(2).items(Joi.number());
 const description = Joi.string();
+const website = Joi.string().uri({ scheme: ['http', 'https'] });
+const email = Joi.string().email();
+const telephone = Joi.string();
+const address = Joi.string();
+const zipcode = Joi.string().min(3).max(10);
+const city = Joi.string();
 
 const findById = {
   params: {
@@ -23,6 +29,12 @@ const create = {
     name: name.required(),
     location,
     description,
+    website,
+    email,
+    telephone,
+    address,
+    zipcode,
+    city,
   },
 };
 
@@ -31,6 +43,12 @@ const update = {
     name,
     location,
     description,
+    website,
+    email,
+    telephone,
+    address,
+    zipcode,
+    city,
   },
 };
 

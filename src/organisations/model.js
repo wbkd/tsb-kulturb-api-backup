@@ -21,7 +21,7 @@ const Organisation = new Schema({
   email: { type: String },
   telephone: { type: String },
   address: { type: String },
-  zipcode: { type: Number },
+  zipcode: { type: String },
   city: { type: String },
   location: { type: pointSchema },
   venues: [{
