@@ -33,7 +33,7 @@ module.exports = (controller, validation) => [
     path: '/login',
     handler: controller.login,
     config: {
-      // validate: validation.login,
+      validate: validation.login,
       auth: false,
       tags: ['api'],
       plugins: {

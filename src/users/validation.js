@@ -5,12 +5,20 @@ const password = Joi.string().required();
 const firstname = Joi.string();
 const token = Joi.string().required();
 const ObjectId = Joi.string().regex(/^[0-9a-fA-F]{24}$/);
+const role = Joi.string().allow(['USER', 'ADMIN']);
 
 const create = {
   payload: {
     email,
     password,
     firstname,
+  },
+};
+
+const login = {
+  payload: {
+    email,
+    password,
   },
 };
 
@@ -34,6 +42,13 @@ const changePassword = {
   },
 };
 
+const changeRole = {
+  payload: {
+    email,
+    role,
+  },
+};
+
 const relation = {
   params: {
     _id: ObjectId.required(),
@@ -44,9 +59,11 @@ const relation = {
 
 module.exports = {
   create,
+  login,
   find,
   verify,
   changePassword,
+  changeRole,
   email,
   relation,
 };
