@@ -52,6 +52,7 @@ const register = async (server, options) => {
   // enable JWT by default
   server.auth.default('jwt');
   server.decorate('request', 'generateToken', generateToken(key, expiresIn));
+  server.decorate('request', 'verifyToken', token => Jwt.verify(token, key));
 
   // init service
   const service = new Service(User);

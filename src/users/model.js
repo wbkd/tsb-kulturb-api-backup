@@ -16,25 +16,25 @@ module.exports = (mongoose) => {
     organisation: { type: Schema.Types.ObjectId, ref: 'Organisation', autopopulate: true },
   });
 
-  User.pre('validate', (user) => {
-    // only hash the password if it has been modified (or is new)
-    if (user.isModified('password')) {
-      // hash password and salt hash
+  User.pre('save', function (next) {
+    const user = this;
+
+    if (user.password && user.isModified('password')) {
       user.password = bcrypt.hashSync(user.password, bcrypt.genSaltSync(8));
     }
 
-    if (user.isModified('verificationToken')) {
-      // hash password and salt hash
+    if (user.verificationToken && user.isModified('verificationToken')) {
       user.verificationToken = bcrypt.hashSync(user.verificationToken, bcrypt.genSaltSync(8));
     }
 
-    if (user.isModified('passwordResetToken')) {
-      // hash password and salt hash
+    if (user.passwordResetToken && user.isModified('passwordResetToken')) {
       user.passwordResetToken = bcrypt.hashSync(user.passwordResetToken, bcrypt.genSaltSync(8));
     }
+
+    next();
   });
 
-  User.methods.compareToken = doc => (token, field) => bcrypt.compare(token, doc[field]);
+  User.methods.comparePassword = doc => token => bcrypt.compare(token, doc.password);
 
   return model('User', User);
 };

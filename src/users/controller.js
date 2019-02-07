@@ -1,8 +1,3 @@
-const crypto = require('crypto');
-
-const generateToken = (bytes = 16) => crypto.randomBytes(bytes).toString('hex');
-const calculateExpiration = (d = new Date(), offset = 24 * 60 * 60 * 1000) => d.setTime(d.getTime() + (offset));
-
 module.exports = class Controller {
   constructor(service) {
     this.service = service;
@@ -14,17 +9,14 @@ module.exports = class Controller {
     const user = await this.service.findOne(email);
     if (user) return h.badRequest('Already Registered');
 
-    const verificationToken = generateToken();
+    const verificationToken = request.generateToken(null, email);
 
     request.sendVerificationEmail(email, verificationToken);
 
-    // @TODO: the verification token should expires
-    const verificationExpiresAt = calculateExpiration();
     await this.service.create({
       email,
       password,
       verificationToken,
-      verificationExpiresAt,
     });
 
     return { success: true };
@@ -37,8 +29,9 @@ module.exports = class Controller {
     if (!user) return h.unauthorized();
     if (!user.verificationToken) return h.badRequest();
 
-    const verificationExpiresAt = calculateExpiration();
-    await this.service.update({ email }, { $set: { verificationExpiresAt } });
+    const verificationToken = request.generateToken(null, email);
+    user.verificationToken = verificationToken;
+    await user.save();
     request.sendVerificationEmail(email, user.verificationToken);
     return { success: true };
   }
@@ -49,12 +42,15 @@ module.exports = class Controller {
     const user = await this.service.findOne(email);
     if (!user) return h.unauthorized();
 
-    if (new Date(user.verificationExpiresAt) < new Date()) return h.unauthorized();
+    try {
+      const isValid = request.verifyToken(token);
+      if (!isValid) return h.unauthorized();
+    } catch (err) {
+      return h.unauthorized();
+    }
 
-    const isValid = await user.compareToken(token, 'verificationToken');
-    if (!isValid) return h.unauthorized();
-
-    await this.service.update({ email }, { $unset: { verificationToken: 1 } });
+    user.verificationToken = null;
+    await user.save();
 
     return { success: true };
   }
@@ -67,7 +63,7 @@ module.exports = class Controller {
 
     if (user.verificationToken) return h.unauthorized('Please confirm your email address');
 
-    const isValid = await user.compareToken(password, 'password');
+    const isValid = await user.comparePassword(password);
     if (!isValid) return h.unauthorized();
 
     const { _id, role } = user;
@@ -86,14 +82,12 @@ module.exports = class Controller {
     const user = await this.service.findOne(email);
     if (!user) return h.unauthorized();
 
-    const passwordResetToken = generateToken();
-    const resetTokenExpiresAt = calculateExpiration();
+    const { _id, role } = user;
+    const passwordResetToken = request.generateToken(_id, email, role);
     request.sendResetPasswordEmail(email, passwordResetToken);
 
-    await this.service.update(
-      { email },
-      { $set: { passwordResetToken, resetTokenExpiresAt } },
-    );
+    user.passwordResetToken = passwordResetToken;
+    await user.save();
 
     return { success: true };
   }
@@ -105,22 +99,29 @@ module.exports = class Controller {
     if (!user) return h.unauthorized();
 
     if (!user.passwordResetToken) return h.unauthorized();
-    if (new Date(user.resetTokenExpiresAt) < new Date()) return h.unauthorized();
 
-    const isValid = await user.compareToken(token, 'passwordResetToken');
-    if (!isValid) return h.unauthorized();
+    try {
+      const isValid = request.verifyToken(token);
+      if (!isValid) return h.unauthorized();
+    } catch (err) {
+      return h.unauthorized();
+    }
 
-    await this.service.update(
-      { email },
-      { $unset: { passwordResetToken: 1, resetTokenExpiresAt: 1 }, $set: { password } },
-    );
+    user.password = password;
+    user.passwordResetToken = null;
+    await user.save();
 
     return { success: true };
   }
 
-  changeRole(request, h) {
+  async changeRole(request, h) {
     const { email, role } = request.payload;
-    return this.service.update({ email }, { $set: { role } });
+
+    const user = await this.service.findOne(email);
+    if (!user) return h.unauthorized();
+
+    user.role = role;
+    return user.save();
   }
 
   info(request, h) {
