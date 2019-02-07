@@ -26,5 +26,4 @@ exports.plugin = {
   name: 'files',
   version: '0.0.1',
   register,
-  dependencies: ['auth'],
 };
