@@ -49,7 +49,7 @@ module.exports = class Controller {
       return h.unauthorized();
     }
 
-    user.verificationToken = null;
+    user.verificationToken = undefined;
     await user.save();
 
     return { success: true };
@@ -108,7 +108,7 @@ module.exports = class Controller {
     }
 
     user.password = password;
-    user.passwordResetToken = null;
+    user.passwordResetToken = undefined;
     await user.save();
 
     return { success: true };
