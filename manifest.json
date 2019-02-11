@@ -69,6 +69,26 @@
         }
       },
       {
+        "plugin": "./src/tags",
+        "routes": {
+          "prefix": "/api/v1/tags"
+        },
+        "options": {
+          "tags": [
+            "Museum",
+            "Theater",
+            "Projektraum",
+            "Galerie",
+            "Bibliothek",
+            "Musikschule",
+            "Gedenkstätte",
+            "Literaturhaus",
+            "Tanz/Performance",
+            "Bildende Kunst"
+          ]
+        }
+      },
+      {
         "plugin": "hapi-pino",
         "options": {
           "prettyPrint": true,
