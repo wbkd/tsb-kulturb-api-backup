@@ -1,11 +1,3 @@
-const bcrypt = require('bcrypt');
-const crypto = require('crypto');
-
-const generateToken = (bytes = 16) => crypto.randomBytes(bytes).toString('hex');
-const hashToken = (token, salt = 8) => bcrypt.hashSync(token, bcrypt.genSaltSync(salt));
-const compareToken = (hashedToken, token) => bcrypt.compare(hashedToken, token);
-const calculateExpiration = (d = new Date(), offset = 24 * 60 * 60 * 1000) => d.setTime(d.getTime() + (offset));
-
 module.exports = class Controller {
   constructor(service) {
     this.service = service;
@@ -14,157 +6,122 @@ module.exports = class Controller {
   async signup(request, h) {
     const { email, password } = request.payload;
 
-    try {
-      const user = await this.service.findOne(email);
-      if (user) return h.badRequest('Already Registered');
+    const user = await this.service.findOne(email);
+    if (user) return h.badRequest('Already Registered');
 
-      const hash = hashToken(password);
-      const verificationToken = generateToken();
+    const verificationToken = request.generateToken(null, email);
 
-      request.sendVerificationEmail(email, verificationToken);
+    request.sendVerificationEmail(email, verificationToken);
 
-      // @TODO: the verification token should expires
-      const hashedToken = hashToken(verificationToken);
-      const verificationExpiresAt = calculateExpiration();
-      await this.service.create({
-        email,
-        password: hash,
-        verificationToken: hashedToken,
-        verificationExpiresAt,
-      });
+    await this.service.create({
+      email,
+      password,
+      verificationToken,
+    });
 
-      return { success: true };
-    } catch (err) {
-      console.error(err);
-      return h.badImplementation();
-    }
+    return { success: true };
   }
 
   async resendConfirmationEmail(request, h) {
     const { email } = request.payload;
 
-    try {
-      const user = await this.service.findOne(email);
-      if (!user) return h.unauthorized();
-      if (!user.verificationToken) return h.badRequest();
+    const user = await this.service.findOne(email);
+    if (!user) return h.unauthorized();
+    if (!user.verificationToken) return h.badRequest();
 
-      const verificationExpiresAt = calculateExpiration();
-      await this.service.update({ email }, { $set: { verificationExpiresAt } });
-      request.sendVerificationEmail(email, user.verificationToken);
-      return { success: true };
-    } catch (err) {
-      console.error(err);
-      return h.badImplementation();
-    }
+    const verificationToken = request.generateToken(null, email);
+    user.verificationToken = verificationToken;
+    await user.save();
+    request.sendVerificationEmail(email, user.verificationToken);
+    return { success: true };
   }
 
   async verify(request, h) {
     const { email, token } = request.query;
 
+    const user = await this.service.findOne(email);
+    if (!user) return h.unauthorized();
+
     try {
-      const user = await this.service.findOne(email);
-      if (!user) return h.unauthorized();
-
-      if (new Date(user.verificationExpiresAt) < new Date()) return h.unauthorized();
-
-      const isValid = await compareToken(token, user.verificationToken);
+      const isValid = request.verifyToken(token);
       if (!isValid) return h.unauthorized();
-
-      await this.service.update({ email }, { $unset: { verificationToken: 1 } });
-
-      return { success: true };
     } catch (err) {
-      console.error(err);
-      return h.badImplementation();
+      return h.unauthorized();
     }
+
+    user.verificationToken = undefined;
+    await user.save();
+
+    return { success: true };
   }
 
   async login(request, h) {
     const { email, password } = request.payload;
 
-    try {
-      const user = await this.service.findOne(email);
-      if (!user) return h.unauthorized();
+    const user = await this.service.findOne(email);
+    if (!user) return h.unauthorized();
 
-      if (user.verificationToken) return h.unauthorized('Please confirm your email address');
+    if (user.verificationToken) return h.unauthorized('Please confirm your email address');
 
-      const isValid = await compareToken(password, user.password);
-      if (!isValid) return h.unauthorized();
+    const isValid = await user.comparePassword(password);
+    if (!isValid) return h.unauthorized();
 
-      const { _id, role } = user;
-      const token = request.generateToken(_id, email, role);
-      return {
-        _id,
-        role,
-        email,
-        token,
-      };
-    } catch (err) {
-      console.error(err);
-      return h.badImplementation();
-    }
+    const { _id, role } = user;
+    const token = request.generateToken(_id, email, role);
+    return {
+      _id,
+      role,
+      email,
+      token,
+    };
   }
 
   async passwordReset(request, h) {
     const { email } = request.payload;
 
-    try {
-      const user = await this.service.findOne(email);
-      if (!user) return h.unauthorized();
+    const user = await this.service.findOne(email);
+    if (!user) return h.unauthorized();
 
-      const passwordResetToken = generateToken();
-      const resetTokenExpiresAt = calculateExpiration();
-      console.log(passwordResetToken);
-      request.sendResetPasswordEmail(email, passwordResetToken);
+    const { _id, role } = user;
+    const passwordResetToken = request.generateToken(_id, email, role);
+    request.sendResetPasswordEmail(email, passwordResetToken);
 
-      const encryptedResetToken = hashToken(passwordResetToken);
-      await this.service.update(
-        { email },
-        { $set: { passwordResetToken: encryptedResetToken, resetTokenExpiresAt } },
-      );
+    user.passwordResetToken = passwordResetToken;
+    await user.save();
 
-      return { success: true };
-    } catch (err) {
-      console.error(err);
-      return h.badImplementation();
-    }
+    return { success: true };
   }
 
   async changePassword(request, h) {
     const { email, token, password } = request.payload;
 
+    const user = await this.service.findOne(email);
+    if (!user) return h.unauthorized();
+
+    if (!user.passwordResetToken) return h.unauthorized();
+
     try {
-      const user = await this.service.findOne(email);
-      if (!user) return h.unauthorized();
-
-      if (!user.passwordResetToken) return h.unauthorized();
-      if (new Date(user.resetTokenExpiresAt) < new Date()) return h.unauthorized();
-
-      const isValid = await compareToken(token, user.passwordResetToken);
+      const isValid = request.verifyToken(token);
       if (!isValid) return h.unauthorized();
-
-      const hash = hashToken(password);
-      await this.service.update(
-        { email },
-        { $unset: { passwordResetToken: 1, resetTokenExpiresAt: 1 }, $set: { password: hash } },
-      );
-
-      return { success: true };
     } catch (err) {
-      console.error(err);
-      return h.badImplementation();
+      return h.unauthorized();
     }
+
+    user.password = password;
+    user.passwordResetToken = undefined;
+    await user.save();
+
+    return { success: true };
   }
 
-  changeRole(request, h) {
+  async changeRole(request, h) {
     const { email, role } = request.payload;
 
-    try {
-      return this.service.update({ email }, { $set: { role } });
-    } catch (err) {
-      console.error(err);
-      return h.badImplementation();
-    }
+    const user = await this.service.findOne(email);
+    if (!user) return h.unauthorized();
+
+    user.role = role;
+    return user.save();
   }
 
   info(request, h) {

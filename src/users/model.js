@@ -1,18 +1,40 @@
-const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 
-const { Schema } = mongoose;
+module.exports = (mongoose) => {
+  const { Schema, model } = mongoose;
 
-const User = new Schema({
-  firstname: { type: String },
-  lastname: { type: String },
-  email: { type: String, required: true, index: { unique: true } },
-  password: { type: String, required: true },
-  verificationToken: { type: String },
-  passwordResetToken: { type: String },
-  resetTokenExpiresAt: { type: Date },
-  createdAt: { type: Date },
-  role: { type: String, enum: ['ADMIN', 'USER'] },
-  organisation: { type: Schema.Types.ObjectId, ref: 'Organisation', autopopulate: true },
-});
+  const User = new Schema({
+    firstname: { type: String },
+    lastname: { type: String },
+    email: { type: String, required: true, index: { unique: true } },
+    password: { type: String, required: true },
+    verificationToken: { type: String },
+    passwordResetToken: { type: String },
+    resetTokenExpiresAt: { type: Date },
+    createdAt: { type: Date },
+    role: { type: String, enum: ['ADMIN', 'USER'] },
+    organisation: { type: Schema.Types.ObjectId, ref: 'Organisation', autopopulate: true },
+  });
 
-module.exports = mongoose.model('User', User);
+  User.pre('save', function (next) {
+    const user = this;
+
+    if (user.password && user.isModified('password')) {
+      user.password = bcrypt.hashSync(user.password, bcrypt.genSaltSync(8));
+    }
+
+    if (user.verificationToken && user.isModified('verificationToken')) {
+      user.verificationToken = bcrypt.hashSync(user.verificationToken, bcrypt.genSaltSync(8));
+    }
+
+    if (user.passwordResetToken && user.isModified('passwordResetToken')) {
+      user.passwordResetToken = bcrypt.hashSync(user.passwordResetToken, bcrypt.genSaltSync(8));
+    }
+
+    next();
+  });
+
+  User.methods.comparePassword = doc => token => bcrypt.compare(token, doc.password);
+
+  return model('User', User);
+};

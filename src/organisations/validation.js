@@ -11,6 +11,7 @@ const telephone = Joi.string();
 const address = Joi.string();
 const zipcode = Joi.string().min(3).max(10);
 const city = Joi.string();
+const tags = Joi.array();
 
 const findById = {
   params: {
@@ -35,6 +36,7 @@ const create = {
     address,
     zipcode,
     city,
+    tags,
   },
 };
 
@@ -49,6 +51,7 @@ const update = {
     address,
     zipcode,
     city,
+    tags,
   },
 };
 

@@ -23,5 +23,4 @@ exports.plugin = {
   name: 'organisations',
   version: '0.0.1',
   register,
-  dependencies: ['auth'],
 };

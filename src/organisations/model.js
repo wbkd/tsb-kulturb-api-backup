@@ -28,8 +28,29 @@ const Organisation = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Venue',
     autopopulate: true,
-    unique: true,
   }],
+  tags: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Tag',
+    autopopulate: true,
+  }],
+  accessibility: {
+    type: String,
+    enum: [
+      'full',
+      'partially',
+      'none',
+      'unknown',
+    ],
+  },
+  type: {
+    type: String,
+    enum: [
+      'organisation',
+      'venue',
+      'organisation and venue',
+    ],
+  },
 }, { toJSON: { virtuals: true } });
 
 Organisation.index({ location: '2dsphere' });
@@ -51,6 +72,16 @@ Organisation.virtual('images', {
   autopopulate: {
     maxDepth: 1,
   },
+});
+
+Organisation.pre('save', function (next) {
+  const organisation = this;
+
+  if (organisation.address && (organisation.isModified('address') || organisation.isModified('city') || organisation.isModified('zipcode'))) {
+    console.log('georeference');
+  }
+
+  next();
 });
 
 async function serializeJSONLD(_id) {

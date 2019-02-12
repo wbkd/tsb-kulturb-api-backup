@@ -1,0 +1,28 @@
+module.exports = class Tag {
+  constructor(db) {
+    this.db = db;
+  }
+
+  find(props, options = {}) {
+    const query = this.db.find(props);
+    if (options.limit) query.limit(options.limit);
+    if (options.skip) query.skip(options.skip);
+    return query;
+  }
+
+  findById(_id) {
+    return this.db.findById(_id);
+  }
+
+  create(entry) {
+    return this.db.create(entry);
+  }
+
+  update(_id, attributes) {
+    return this.db.findByIdAndUpdate(_id, attributes, { new: true });
+  }
+
+  remove(_id) {
+    return this.db.findByIdAndDelete(_id);
+  }
+};
