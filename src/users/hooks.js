@@ -5,13 +5,9 @@ const omitCredentials = async (request, h) => {
   if (!response.source) return response;
   if (response.source.password) {
     delete response.source.password;
-    delete response.source.verificationToken;
-    delete response.source.passwordResetToken;
   } else if (response.source.length) {
     response.source.forEach((res) => {
       delete res.password;
-      delete res.verificationToken;
-      delete res.passwordResetToken;
     });
   }
   return response;

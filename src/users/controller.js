@@ -10,13 +10,11 @@ module.exports = class Controller {
     if (user) return h.badRequest('Already Registered');
 
     const verificationToken = request.generateToken(null, email);
-
     request.sendVerificationEmail(email, verificationToken);
 
     await this.service.create({
       email,
       password,
-      verificationToken,
     });
 
     return { success: true };
@@ -27,12 +25,10 @@ module.exports = class Controller {
 
     const user = await this.service.findOne(email);
     if (!user) return h.unauthorized();
-    if (!user.verificationToken) return h.badRequest();
+    if (user.verified) return h.badRequest();
 
     const verificationToken = request.generateToken(null, email);
-    user.verificationToken = verificationToken;
-    await user.save();
-    request.sendVerificationEmail(email, user.verificationToken);
+    request.sendVerificationEmail(email, verificationToken);
     return { success: true };
   }
 
@@ -43,13 +39,13 @@ module.exports = class Controller {
     if (!user) return h.unauthorized();
 
     try {
-      const isValid = request.verifyToken(token);
-      if (!isValid) return h.unauthorized();
+      const { email: emailtoken } = request.verifyToken(token);
+      if (!emailtoken || emailtoken !== email) return h.unauthorized();
     } catch (err) {
       return h.unauthorized();
     }
 
-    user.verificationToken = undefined;
+    user.verified = true;
     await user.save();
 
     return { success: true };
@@ -61,7 +57,7 @@ module.exports = class Controller {
     const user = await this.service.findOne(email);
     if (!user) return h.unauthorized();
 
-    if (user.verificationToken) return h.unauthorized('Please confirm your email address');
+    if (user.verified) return h.unauthorized('Please confirm your email address');
 
     const isValid = await user.comparePassword(password);
     if (!isValid) return h.unauthorized();
@@ -86,9 +82,6 @@ module.exports = class Controller {
     const passwordResetToken = request.generateToken(_id, email, role);
     request.sendResetPasswordEmail(email, passwordResetToken);
 
-    user.passwordResetToken = passwordResetToken;
-    await user.save();
-
     return { success: true };
   }
 
@@ -98,17 +91,14 @@ module.exports = class Controller {
     const user = await this.service.findOne(email);
     if (!user) return h.unauthorized();
 
-    if (!user.passwordResetToken) return h.unauthorized();
-
     try {
-      const isValid = request.verifyToken(token);
-      if (!isValid) return h.unauthorized();
+      const { email: emailtoken } = request.verifyToken(token);
+      if (!emailtoken || emailtoken !== email) return h.unauthorized();
     } catch (err) {
       return h.unauthorized();
     }
 
     user.password = password;
-    user.passwordResetToken = undefined;
     await user.save();
 
     return { success: true };

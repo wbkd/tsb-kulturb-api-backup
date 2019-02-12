@@ -7,10 +7,8 @@ module.exports = (mongoose) => {
     firstname: { type: String },
     lastname: { type: String },
     email: { type: String, required: true, index: { unique: true } },
-    password: { type: String, required: true },
-    verificationToken: { type: String },
-    passwordResetToken: { type: String },
-    resetTokenExpiresAt: { type: Date },
+    password: { type: String, required: true, select: false },
+    verified: { type: Boolean, default: false },
     createdAt: { type: Date },
     role: { type: String, enum: ['ADMIN', 'USER'] },
     organisation: { type: Schema.Types.ObjectId, ref: 'Organisation', autopopulate: true },
@@ -21,14 +19,6 @@ module.exports = (mongoose) => {
 
     if (user.password && user.isModified('password')) {
       user.password = bcrypt.hashSync(user.password, bcrypt.genSaltSync(8));
-    }
-
-    if (user.verificationToken && user.isModified('verificationToken')) {
-      user.verificationToken = bcrypt.hashSync(user.verificationToken, bcrypt.genSaltSync(8));
-    }
-
-    if (user.passwordResetToken && user.isModified('passwordResetToken')) {
-      user.passwordResetToken = bcrypt.hashSync(user.passwordResetToken, bcrypt.genSaltSync(8));
     }
 
     next();

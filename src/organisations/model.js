@@ -60,7 +60,7 @@ module.exports = (mongoose) => {
     foreignField: 'organisation',
     autopopulate: {
       maxDepth: 1,
-      select: '-password -verificationToken -passwordResetToken -resetTokenExpiresAt -verificationTokenExpiresAt',
+      select: '-password',
     },
   });
 
