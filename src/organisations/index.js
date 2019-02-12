@@ -5,8 +5,11 @@ const model = require('./model');
 const validation = require('./validation');
 
 const register = (server, options) => {
+  // init model
+  const Organisation = model(server.mongoose);
+
   // init service
-  const service = new Service(model);
+  const service = new Service(Organisation);
 
   // init controller
   const controller = new Controller(service);

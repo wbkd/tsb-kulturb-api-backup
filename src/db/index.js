@@ -13,9 +13,6 @@ const register = async (server, options) => {
   try {
     const db = await mongoose.connect(url, { useNewUrlParser: true });
 
-    // automatically convert all ObjectIds to String
-    mongoose.ObjectId.get(v => v.toString());
-
     server.decorate('server', 'mongoose', db);
     server.decorate('request', 'models', db.models);
   } catch (err) {
