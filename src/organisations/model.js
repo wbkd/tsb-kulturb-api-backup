@@ -16,7 +16,7 @@ module.exports = (mongoose) => {
   }, { _id: false });
 
   const Organisation = new Schema({
-    name: { type: String, required: true, index: { unique: true } },
+    name: { type: String, required: true },
     description: { type: String },
     website: { type: String },
     email: { type: String },
