@@ -32,7 +32,7 @@
     "got": "^9.6.0",
     "hapi": "^17.8.1",
     "hapi-auth-jwt2": "^8.2.0",
-    "hapi-authorization": "^4.0.0",
+    "hapi-authorization": "git://github.com/g-div/hapi-authorization.git#fix-settings",
     "hapi-boom-decorators": "^4.1.2",
     "hapi-pino": "^5.2.0",
     "hapi-rate-limitor": "^2.4.0",
