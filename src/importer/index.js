@@ -30,7 +30,7 @@ const register = async (server, options) => {
     address: entry.Adresse,
     zipcode: entry.PLZ,
     city: entry.Ort,
-    website: entry.Website,
+    website: entry.Webseite,
     type: assignType(entry.Typ),
     tags: assignTags(entry.Sparte, tags),
   })).forEach(async (entry) => {

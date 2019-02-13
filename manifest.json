@@ -83,6 +83,12 @@
         }
       },
       {
+        "plugin": "./src/importer",
+        "options": {
+          "csvFile": "./data/daten.csv"
+        }
+      },
+      {
         "plugin": "hapi-pino",
         "options": {
           "prettyPrint": true,
