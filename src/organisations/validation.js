@@ -12,17 +12,30 @@ const address = Joi.string();
 const zipcode = Joi.string().min(3).max(10);
 const city = Joi.string();
 const tags = Joi.array();
+const limit = Joi.number();
+const skip = Joi.number();
+
+const find = {
+  query: {
+    name,
+    location,
+    description,
+    website,
+    email,
+    telephone,
+    address,
+    zipcode,
+    city,
+    tags,
+    limit,
+    skip,
+  },
+};
 
 const findById = {
   params: {
     _id,
   },
-};
-
-const find = {
-  name,
-  location,
-  description,
 };
 
 const create = {
