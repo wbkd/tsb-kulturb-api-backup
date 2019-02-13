@@ -57,7 +57,7 @@ module.exports = class Controller {
     const user = await this.service.findOne(email);
     if (!user) return h.unauthorized();
 
-    if (user.verified) return h.unauthorized('Please confirm your email address');
+    if (!user.verified) return h.unauthorized('Please confirm your email address');
 
     const isValid = await user.comparePassword(password);
     if (!isValid) return h.unauthorized();
