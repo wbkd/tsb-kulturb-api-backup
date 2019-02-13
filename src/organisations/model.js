@@ -1,3 +1,5 @@
+const got = require('got');
+
 module.exports = (mongoose) => {
   const { Schema } = mongoose;
 
@@ -11,7 +13,7 @@ module.exports = (mongoose) => {
       type: [Number],
       required: true,
     },
-  });
+  }, { _id: false });
 
   const Organisation = new Schema({
     name: { type: String, required: true, index: { unique: true } },
@@ -73,14 +75,28 @@ module.exports = (mongoose) => {
     },
   });
 
-  Organisation.pre('save', function (next) {
+  Organisation.pre('save', async function geocode(next) {
     const organisation = this;
 
     if (organisation.address && (organisation.isModified('address') || organisation.isModified('city') || organisation.isModified('zipcode'))) {
-      console.log('georeference');
-    }
+      const { HERE_APP_ID, HERE_APP_CODE } = process.env;
+      const response = await got('https://geocoder.api.here.com/6.2/geocode.json', {
+        query: {
+          app_id: HERE_APP_ID,
+          app_code: HERE_APP_CODE,
+          searchtext: `${organisation.address}, ${organisation.zipcode} ${organisation.city}`,
+          jsonattributes: 1,
+        },
+      });
+      const { latitude, longitude } = JSON.parse(response.body).response.view[0].result[0].location.displayPosition;
 
-    next();
+      organisation.location = {
+        type: 'Point',
+        coordinates: [latitude, longitude],
+      };
+
+      next();
+    }
   });
 
   async function serializeJSONLD(_id) {

@@ -29,6 +29,7 @@
     "catbox-memory": "^4.0.1",
     "csvtojson": "^2.0.8",
     "dotenv": "^6.2.0",
+    "got": "^9.6.0",
     "hapi": "^17.8.1",
     "hapi-auth-jwt2": "^8.2.0",
     "hapi-authorization": "^4.0.0",
