@@ -3,10 +3,19 @@ module.exports = class Organisation {
     this.db = db;
   }
 
+  count(props) {
+    return this.db.count(props);
+  }
+
   find(props, options) {
     const query = this.db.find(props);
     if (options.limit) query.limit(options.limit);
     if (options.skip) query.skip(options.skip);
+    if (options.sortField) query.sort({ [options.sortField]: 1 });
+    if (options.sortField && options.sortOrder) {
+      const sortOrder = options.sortOrder === 'ascend' ? 1 : -1;
+      query.sort({ [options.sortField]: sortOrder });
+    }
     return query;
   }
 

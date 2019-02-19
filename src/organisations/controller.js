@@ -3,9 +3,24 @@ module.exports = class Controller {
     this.service = service;
   }
 
-  find(request, h) {
-    const { limit, skip, ...filters } = request.query;
-    return this.service.find(filters, { limit, skip });
+  async find(request, h) {
+    const {
+      limit,
+      skip,
+      sortField,
+      sortOrder,
+      ...filters
+    } = request.query;
+
+    const data = await this.service.find(filters, {
+      limit,
+      skip,
+      sortField,
+      sortOrder,
+    });
+
+    const count = await this.service.count(filters);
+    return { data, count };
   }
 
   findById(request, h) {
