@@ -89,7 +89,6 @@
           "redact": ["req.headers.authorization"]
         }
       },
-      "./src/importer",
       "inert",
       "vision",
       "hapi-swagger",
