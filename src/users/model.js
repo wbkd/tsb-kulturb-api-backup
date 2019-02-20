@@ -7,7 +7,7 @@ module.exports = (mongoose) => {
     firstname: { type: String },
     lastname: { type: String },
     email: { type: String, required: true, index: { unique: true } },
-    password: { type: String, required: true, select: false },
+    password: { type: String, required: true },
     verified: { type: Boolean, default: false },
     createdAt: { type: Date },
     role: { type: String, enum: ['ADMIN', 'USER'] },
@@ -24,7 +24,9 @@ module.exports = (mongoose) => {
     next();
   });
 
-  User.methods.comparePassword = doc => token => bcrypt.compare(token, doc.password);
+  User.methods.comparePassword = async function(password) {
+    return bcrypt.compare(password, this.password);
+  };
 
   return model('User', User);
 };
