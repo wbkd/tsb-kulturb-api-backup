@@ -14,7 +14,7 @@ const city = Joi.string();
 const tags = Joi.array();
 const limit = Joi.number();
 const skip = Joi.number();
-const type = Joi.array().valid(['organisation', 'venue']);
+const types = Joi.array().items(Joi.string().valid(['organisation', 'venue']));
 const sortField = Joi.string();
 const sortOrder = Joi.string().valid(['ascend', 'descend']);
 
@@ -32,7 +32,7 @@ const find = {
     tags,
     limit,
     skip,
-    type,
+    types,
     sortField,
     sortOrder,
   },
@@ -56,7 +56,7 @@ const create = {
     zipcode,
     city,
     tags,
-    type,
+    types,
   },
 };
 
@@ -72,7 +72,7 @@ const update = {
     zipcode,
     city,
     tags,
-    type,
+    types,
   },
 };
 

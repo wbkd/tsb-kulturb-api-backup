@@ -31,7 +31,7 @@ const register = async (server, options) => {
     zipcode: entry.PLZ,
     city: entry.Ort,
     website: entry.Webseite.startsWith('http') ? entry.Webseite : `https://${entry.Webseite}`,
-    type: assignType(entry.Typ),
+    types: assignType(entry.Typ),
     tags: assignTags(entry.Sparte, tags),
   })).forEach(async (entry) => {
     try {
