@@ -44,7 +44,7 @@ module.exports = (mongoose) => {
         'unknown',
       ],
     },
-    type: [{
+    types: [{
       type: String,
       enum: [
         'organisation',
