@@ -5,13 +5,13 @@ const _id = ObjectId.required();
 
 const create = {
   payload: {
-    relation: Joi.string().allow(['organisation', 'venue']).required(),
-    type: Joi.string().allow(['logo', 'image']).required(),
+    relation: Joi.string().valid(['organisation', 'venue']).required(),
+    type: Joi.string().valid(['logo', 'image']).required(),
     relId: _id.required(),
     file: Joi.any().required(),
   },
   headers: Joi.object().keys({
-    'content-type': Joi.string().required().allow(['image/jpeg', 'image/png']),
+    'content-type': Joi.string().required().valid(['image/jpeg', 'image/png']),
   }).unknown(),
 };
 

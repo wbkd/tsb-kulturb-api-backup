@@ -5,7 +5,7 @@ const password = Joi.string().required();
 const firstname = Joi.string();
 const token = Joi.string().required();
 const ObjectId = Joi.string().regex(/^[0-9a-fA-F]{24}$/);
-const role = Joi.string().allow(['USER', 'ADMIN']);
+const role = Joi.string().valid(['USER', 'ADMIN']);
 
 const create = {
   payload: {
