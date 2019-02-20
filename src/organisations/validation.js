@@ -14,9 +14,9 @@ const city = Joi.string();
 const tags = Joi.array();
 const limit = Joi.number();
 const skip = Joi.number();
-const type = Joi.strict().allow(['organisation', 'venue', 'organisation and venue']);
+const type = Joi.array().valid(['organisation', 'venue']);
 const sortField = Joi.string();
-const sortOrder = Joi.string().allow(['ascend', 'descend']);
+const sortOrder = Joi.string().valid(['ascend', 'descend']);
 
 const find = {
   query: {

@@ -44,14 +44,14 @@ module.exports = (mongoose) => {
         'unknown',
       ],
     },
-    type: {
+    type: [{
       type: String,
       enum: [
         'organisation',
         'venue',
         'organisation and venue',
       ],
-    },
+    }],
   }, { toJSON: { virtuals: true } });
 
   Organisation.index({ location: '2dsphere' });

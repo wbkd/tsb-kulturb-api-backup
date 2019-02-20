@@ -1,9 +1,9 @@
 const csv = require('csvtojson');
 
 const assignType = (type) => {
-  if (type === 'VENUE') return 'venue';
-  if (type === 'ORG') return 'organisation';
-  return 'organisation and venue';
+  if (type === 'VENUE') return ['venue'];
+  if (type === 'ORG') return ['organisation'];
+  return ['organisation', 'venue'];
 };
 
 const assignTags = (tag, tags) => {
