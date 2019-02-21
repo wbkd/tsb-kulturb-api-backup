@@ -18,6 +18,12 @@ const types = Joi.array().items(Joi.string().valid(['organisation', 'venue']));
 const sort = Joi.string();
 const order = Joi.string().valid(['ascend', 'descend']);
 
+const search = {
+  query: {
+    text: Joi.string(),
+  },
+};
+
 const find = {
   query: {
     name,
@@ -91,6 +97,7 @@ const relation = {
 };
 
 module.exports = {
+  search,
   find,
   findById,
   create,

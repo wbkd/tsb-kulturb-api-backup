@@ -1,6 +1,15 @@
 module.exports = (controller, validation) => [
   {
     method: 'GET',
+    path: '/search',
+    handler: controller.search,
+    config: {
+      validate: validation.search,
+      auth: false,
+      tags: ['api'],
+    },
+  }, {
+    method: 'GET',
     path: '/',
     handler: controller.find,
     config: {

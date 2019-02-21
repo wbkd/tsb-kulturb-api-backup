@@ -3,12 +3,18 @@ module.exports = class Organisation {
     this.db = db;
   }
 
+  search(text) {
+    return this.db.find(
+      { $text: { $search: text } },
+      { score: { $meta: 'textScore' } },
+    ).sort({ score: { $meta: 'textScore' } });
+  }
+
   count(props) {
     return this.db.count(props);
   }
 
   find(props, options) {
-    console.log(props);
     return this.db.find(props)
       .limit(options.limit)
       .skip(options.skip)

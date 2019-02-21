@@ -3,6 +3,11 @@ module.exports = class Controller {
     this.service = service;
   }
 
+  search(request, h) {
+    const { text } = request.query;
+    return this.service.search(text);
+  }
+
   async find(request, h) {
     const {
       limit = 10,

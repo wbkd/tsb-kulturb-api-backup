@@ -54,6 +54,14 @@ module.exports = (mongoose) => {
     }],
   }, { toJSON: { virtuals: true } });
 
+  Organisation.index({
+    name: 'text',
+    description: 'text',
+    website: 'text',
+    address: 'text',
+    city: 'text',
+  });
+
   Organisation.index({ location: '2dsphere' });
 
   Organisation.virtual('users', {
