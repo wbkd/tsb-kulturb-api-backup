@@ -5,18 +5,18 @@ module.exports = class Controller {
 
   async find(request, h) {
     const {
-      limit,
-      skip,
-      sortField,
-      sortOrder,
+      limit = 10,
+      skip = 0,
+      sort = 'name',
+      order = 'ascend',
       ...filters
     } = request.query;
 
     const data = await this.service.find(filters, {
       limit,
       skip,
-      sortField,
-      sortOrder,
+      sort,
+      order,
     });
 
     const count = await this.service.count(filters);

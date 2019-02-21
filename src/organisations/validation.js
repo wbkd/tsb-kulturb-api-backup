@@ -15,8 +15,8 @@ const tags = Joi.array();
 const limit = Joi.number();
 const skip = Joi.number();
 const types = Joi.array().items(Joi.string().valid(['organisation', 'venue']));
-const sortField = Joi.string();
-const sortOrder = Joi.string().valid(['ascend', 'descend']);
+const sort = Joi.string();
+const order = Joi.string().valid(['ascend', 'descend']);
 
 const find = {
   query: {
@@ -33,8 +33,8 @@ const find = {
     limit,
     skip,
     types,
-    sortField,
-    sortOrder,
+    sort,
+    order,
   },
 };
 
