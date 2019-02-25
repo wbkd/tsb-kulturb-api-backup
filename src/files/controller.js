@@ -35,8 +35,8 @@ module.exports = class Controller {
     const removed = await this.service.remove(_id);
 
     if (removed) {
-      const { url } = removed;
-      return this.service.deleteFile({ url });
+      const { path } = removed;
+      return this.service.deleteFile(path);
     }
     return h.notFound();
   }

@@ -3,6 +3,7 @@ const AWS = require('aws-sdk');
 module.exports = class Upload {
   constructor(db, config) {
     this.db = db;
+    this.url = `https://s3-${config.region}.amazonaws.com/${config.bucket}/`;
 
     AWS.config.update({
       region: config.region,
@@ -14,8 +15,6 @@ module.exports = class Upload {
         Bucket: config.bucket,
       },
     });
-
-    this.url = `https://s3-${config.region}.amazonaws.com/${config.bucket}/`;
   }
 
   uploadFile({
@@ -50,9 +49,7 @@ module.exports = class Upload {
     });
   }
 
-  deleteFile({
-    path,
-  }) {
+  deleteFile(path) {
     return this.S3.deleteObject({
       Key: path,
     }).promise();

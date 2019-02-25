@@ -10,6 +10,7 @@ module.exports = (controller, validation) => [
         maxBytes: 10 * (1024 * 1024), // 10 MB
       },
       validate: validation.create,
+      auth: 'jwt',
       tags: ['api'],
       plugins: {
         hapiAuthorization: { role: 'USER' },
