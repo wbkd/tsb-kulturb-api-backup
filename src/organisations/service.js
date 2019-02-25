@@ -3,17 +3,20 @@ module.exports = class Organisation {
     this.db = db;
   }
 
-  search(name) {
+  search(name, options) {
     /* return this.db.find(
       { $text: { $search: text } },
       { score: { $meta: 'textScore' } },
     ).sort({ score: { $meta: 'textScore' } }); */
+
     return this.db.find({
       name: {
         $regex: name,
         $options: 'i',
       },
-    });
+    })
+      .limit(options.limit)
+      .skip(options.skip);
   }
 
   count(props) {

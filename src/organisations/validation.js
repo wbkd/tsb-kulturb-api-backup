@@ -21,6 +21,8 @@ const order = Joi.string().valid(['ascend', 'descend']);
 const search = {
   query: {
     name: Joi.string(),
+    limit,
+    skip,
   },
 };
 

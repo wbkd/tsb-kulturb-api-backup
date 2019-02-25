@@ -4,8 +4,13 @@ module.exports = class Controller {
   }
 
   search(request, h) {
-    const { name } = request.query;
-    return this.service.search(name);
+    const {
+      name,
+      limit = 10,
+      skip = 0,
+    } = request.query;
+
+    return this.service.search(name, { limit, skip });
   }
 
   async find(request, h) {
