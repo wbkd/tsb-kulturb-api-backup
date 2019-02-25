@@ -10,9 +10,6 @@ const create = {
     relId: _id.required(),
     file: Joi.any().required(),
   },
-  headers: Joi.object().keys({
-    'content-type': Joi.string().required().valid(['image/jpeg', 'image/png']),
-  }).unknown(),
 };
 
 const remove = {
