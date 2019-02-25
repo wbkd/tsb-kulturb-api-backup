@@ -4,10 +4,16 @@ module.exports = class Organisation {
   }
 
   search(text) {
-    return this.db.find(
+/*     return this.db.find(
       { $text: { $search: text } },
       { score: { $meta: 'textScore' } },
-    ).sort({ score: { $meta: 'textScore' } });
+    ).sort({ score: { $meta: 'textScore' } }); */
+    return this.db.find({
+      name: {
+        $regex: text,
+        $options: 'i',
+      },
+    });
   }
 
   count(props) {
