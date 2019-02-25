@@ -23,7 +23,7 @@ module.exports = class Controller {
 
     return this.service.create({
       filename,
-      url: key,
+      path: key,
       relation,
       relId,
       type,

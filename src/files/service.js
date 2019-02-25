@@ -14,6 +14,8 @@ module.exports = class Upload {
         Bucket: config.bucket,
       },
     });
+
+    this.url = `https://s3-${config.region}.amazonaws.com/${config.bucket}/`;
   }
 
   uploadFile({
@@ -33,14 +35,15 @@ module.exports = class Upload {
 
   async create({
     filename,
-    url,
+    path,
     relation,
     type,
     relId,
   }) {
     return this.db.create({
       filename,
-      url,
+      path,
+      url: `${this.url}${path}`,
       type,
       relation,
       [relation]: relId,
@@ -48,10 +51,10 @@ module.exports = class Upload {
   }
 
   deleteFile({
-    url,
+    path,
   }) {
     return this.S3.deleteObject({
-      Key: url,
+      Key: path,
     }).promise();
   }
 
