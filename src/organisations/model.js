@@ -80,7 +80,7 @@ module.exports = (mongoose) => {
   Organisation.virtual('images', {
     ref: 'File',
     localField: '_id',
-    foreignField: 'organisation',
+    foreignField: 'location',
     autopopulate: {
       maxDepth: 1,
     },

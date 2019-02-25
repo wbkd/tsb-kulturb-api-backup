@@ -9,7 +9,7 @@ module.exports = (mongoose) => {
       enum: ['logo', 'image'],
       required: true,
     },
-    organisation: {
+    location: {
       type: Schema.Types.ObjectId,
       ref: 'Organisation',
     },
