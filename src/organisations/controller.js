@@ -4,8 +4,8 @@ module.exports = class Controller {
   }
 
   search(request, h) {
-    const { text } = request.query;
-    return this.service.search(text);
+    const { name } = request.query;
+    return this.service.search(name);
   }
 
   async find(request, h) {

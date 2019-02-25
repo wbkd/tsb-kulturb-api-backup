@@ -20,7 +20,7 @@ const order = Joi.string().valid(['ascend', 'descend']);
 
 const search = {
   query: {
-    text: Joi.string(),
+    name: Joi.string(),
   },
 };
 

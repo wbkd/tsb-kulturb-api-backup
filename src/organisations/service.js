@@ -3,14 +3,14 @@ module.exports = class Organisation {
     this.db = db;
   }
 
-  search(text) {
-/*     return this.db.find(
+  search(name) {
+    /* return this.db.find(
       { $text: { $search: text } },
       { score: { $meta: 'textScore' } },
     ).sort({ score: { $meta: 'textScore' } }); */
     return this.db.find({
       name: {
-        $regex: text,
+        $regex: name,
         $options: 'i',
       },
     });
