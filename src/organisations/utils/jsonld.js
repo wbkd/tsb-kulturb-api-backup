@@ -1,7 +1,7 @@
 const serializeOrganisationSchema = (entry) => {
   const res = {
     '@context': 'http://schema.org',
-    '@type': 'Organisation',
+    '@type': 'Organization',
     '@id': entry._id,
     name: entry.name,
     description: entry.description,
