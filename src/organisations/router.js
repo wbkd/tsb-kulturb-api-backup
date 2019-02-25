@@ -72,7 +72,7 @@ module.exports = (controller, validation) => [
       auth: 'jwt',
       tags: ['api'],
       plugins: {
-        hapiAuthorization: { role: 'USER' },
+        hapiAuthorization: { role: 'ADMIN' },
       },
     },
   },

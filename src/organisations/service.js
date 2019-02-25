@@ -11,7 +11,7 @@ module.exports = class Organisation {
   }
 
   count(props) {
-    return this.db.count(props);
+    return this.db.countDocuments(props);
   }
 
   find(props, options) {

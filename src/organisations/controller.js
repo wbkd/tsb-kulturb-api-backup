@@ -28,13 +28,18 @@ module.exports = class Controller {
     return { data, count };
   }
 
-  findById(request, h) {
+  async findById(request, h) {
     const { _id } = request.params;
     const { accept } = request.headers;
+
+    let res;
     if (accept === 'application/ld+json') {
-      return this.service.findByIdAsJSONLD(_id);
+      res = await this.service.findByIdAsJSONLD(_id);
     }
-    return this.service.findById(_id);
+    res = await this.service.findById(_id);
+
+    if (!res) return h.notFound();
+    return res;
   }
 
   create(request, h) {
@@ -42,15 +47,21 @@ module.exports = class Controller {
     return this.service.create(payload);
   }
 
-  update(request, h) {
+  async update(request, h) {
     const { _id } = request.params;
     const { payload } = request;
-    return this.service.update(_id, { $set: payload });
+    const res = await this.service.update(_id, payload);
+
+    if (!res) return h.notFound();
+    return res;
   }
 
-  remove(request, h) {
+  async remove(request, h) {
     const { _id } = request.params;
-    return this.service.remove(_id);
+    const res = await this.service.remove(_id);
+
+    if (!res) return h.notFound();
+    return res;
   }
 
   handleRelation(request, h) {

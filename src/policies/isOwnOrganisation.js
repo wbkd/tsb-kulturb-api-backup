@@ -9,6 +9,7 @@ const isOwnOrganisation = async (request, h) => {
   const { User } = request.models;
   const user = await User.findById(userId);
   if (!user) throw h.notFound();
+  if (!user.organisation) return h.unauthorized();
 
   // user is organisation member and can update it
   if (user.organisation.toString() === _id) return h.continue;
