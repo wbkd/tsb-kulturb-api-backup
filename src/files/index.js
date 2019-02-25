@@ -8,8 +8,10 @@ const register = (server, options) => {
   const bucket = options.bucket || 'metadata-generator';
   const region = options.region || 'eu-central-1';
 
+  const File = model(server.mongoose);
+
   // init service
-  const service = new Service(model, { bucket, region });
+  const service = new Service(File, { bucket, region });
 
   // init controller
   const controller = new Controller(service);

@@ -1,33 +1,19 @@
-const mongoose = require('mongoose');
+module.exports = (mongoose) => {
+  const { Schema } = mongoose;
 
-const { Schema } = mongoose;
-
-const File = new Schema({
-  filename: { type: String, required: true },
-  url: { type: String, required: true, unique: true },
-  type: {
-    type: String,
-    enum: ['logo', 'image'],
-    required: true,
-  },
-}, { discriminatorKey: 'relation', timestamps: true });
-
-const model = mongoose.model('File', File);
-
-model.discriminator('organisation',
-  new Schema({
+  const File = new Schema({
+    filename: { type: String, required: true },
+    url: { type: String, required: true, unique: true },
+    type: {
+      type: String,
+      enum: ['logo', 'image'],
+      required: true,
+    },
     organisation: {
       type: Schema.Types.ObjectId,
       ref: 'Organisation',
     },
-  }));
+  }, { timestamps: true, toJSON: { virtuals: true } });
 
-model.discriminator('venue',
-  new Schema({
-    venue: {
-      type: Schema.Types.ObjectId,
-      ref: 'Venue',
-    },
-  }));
-
-module.exports = model;
+  return mongoose.model('File', File);
+};
