@@ -1,55 +1,7 @@
-const got = require('got');
 const Boom = require('boom');
 
-const serializeOrganisationSchema = (entry) => {
-  const res = {
-    '@context': 'http://schema.org',
-    '@type': 'Organisation',
-    '@id': entry._id,
-    name: entry.name,
-    description: entry.description,
-    url: entry.website,
-    sameAs: entry.website,
-    email: entry.email,
-    telephone: entry.telephone,
-  };
-
-  const logo = entry.images.find(image => image.type === 'logo');
-  if (logo) {
-    res.logo = logo.url;
-  }
-
-  if (entry.address) {
-    res.location = {
-      '@type': 'Place',
-      address: {
-        '@type': 'PostalAddress',
-        addressCountry: 'Germany',
-        addressLocality: entry.city,
-        postalCode: entry.zipcode,
-        streetAddress: entry.address,
-      },
-    };
-  }
-
-  if (entry.location) {
-    res.location.geo = {
-      '@type': 'GeoCoordinates',
-      latitude: entry.location.coordinates[0],
-      longitude: entry.location.coordinates[1],
-    };
-  }
-
-  if (entry.venues.length !== 0) {
-    res.subOrganisation = entry.venues.map((venue) => {
-      const result = serializeOrganisationSchema(venue);
-      delete result['@context'];
-      return result;
-    });
-  }
-
-  return res;
-};
+const jsonld = require('./utils/jsonld');
+const geocoder = require('./utils/geocode');
 
 module.exports = (mongoose) => {
   const { Schema } = mongoose;
@@ -103,7 +55,7 @@ module.exports = (mongoose) => {
         'organisation and venue',
       ],
     }],
-  }, { toJSON: { virtuals: true } });
+  }, { timestamps: true, toJSON: { virtuals: true } });
 
   Organisation.index({
     name: 'text',
@@ -138,30 +90,16 @@ module.exports = (mongoose) => {
     const organisation = this;
 
     if (organisation.address && (organisation.isModified('address') || organisation.isModified('city') || organisation.isModified('zipcode'))) {
-      const { HERE_APP_ID, HERE_APP_CODE } = process.env;
-      const response = await got('https://geocoder.api.here.com/6.2/geocode.json', {
-        query: {
-          app_id: HERE_APP_ID,
-          app_code: HERE_APP_CODE,
-          searchtext: `${organisation.address}, ${organisation.zipcode} ${organisation.city}`,
-          jsonattributes: 1,
-        },
-      });
-      const { latitude, longitude } = JSON.parse(response.body).response.view[0].result[0].location.displayPosition;
-
-      organisation.location = {
-        type: 'Point',
-        coordinates: [latitude, longitude],
-      };
-
-      next();
+      organisation.location = geocoder.geocode(organisation);
     }
+
+    next();
   });
 
   Organisation.statics.serializeJSONLD = async function serializeJSONLD(_id) {
     try {
       const entry = await this.model('Organisation').findById(_id);
-      return serializeOrganisationSchema(entry);
+      return jsonld.serializeOrganisationSchema(entry);
     } catch (err) {
       return Boom.notFound();
     }
