@@ -77,6 +77,17 @@ module.exports = (mongoose) => {
     },
   });
 
+  Organisation.virtual('logo', {
+    ref: 'File',
+    localField: '_id',
+    foreignField: 'location',
+    justOne: true,
+    autopopulate: {
+      match: { type: 'logo' },
+      maxDepth: 1,
+    },
+  });
+
   Organisation.virtual('images', {
     ref: 'File',
     localField: '_id',
