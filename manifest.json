@@ -5,7 +5,8 @@
       "cors": {
         "origin": [
           "*://localhost:*"
-        ]
+        ],
+        "additionalHeaders": ["cache-control", "x-requested-with", "authorization"]
       }
     },
     "cache": {
