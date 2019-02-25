@@ -35,8 +35,9 @@ module.exports = class Controller {
     let res;
     if (accept === 'application/ld+json') {
       res = await this.service.findByIdAsJSONLD(_id);
+    } else {
+      res = await this.service.findById(_id);
     }
-    res = await this.service.findById(_id);
 
     if (!res) return h.notFound();
     return res;
