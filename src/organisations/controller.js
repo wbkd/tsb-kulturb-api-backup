@@ -8,9 +8,16 @@ module.exports = class Controller {
       name,
       limit = 10,
       skip = 0,
+      sort = 'name',
+      order = 'ascend',
     } = request.query;
 
-    return this.service.search(name, { limit, skip });
+    return this.service.search(name, {
+      limit,
+      skip,
+      sort,
+      order,
+    });
   }
 
   async find(request, h) {

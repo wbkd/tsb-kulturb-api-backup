@@ -16,7 +16,8 @@ module.exports = class Organisation {
       },
     })
       .limit(options.limit)
-      .skip(options.skip);
+      .skip(options.skip)
+      .sort({ [options.sort]: options.order === 'ascend' ? 1 : -1 });
   }
 
   count(props) {
