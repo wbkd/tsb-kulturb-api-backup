@@ -20,7 +20,7 @@ module.exports = class Controller {
     });
   }
 
-  async find(request, h) {
+  find(request, h) {
     const {
       limit = 10,
       skip = 0,
@@ -29,15 +29,12 @@ module.exports = class Controller {
       ...filters
     } = request.query;
 
-    const data = await this.service.find(filters, {
+    return this.service.find(filters, {
       limit,
       skip,
       sort,
       order,
     });
-
-    const count = await this.service.count(filters);
-    return { data, count };
   }
 
   async findById(request, h) {

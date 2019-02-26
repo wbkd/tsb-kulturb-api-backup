@@ -3,32 +3,42 @@ module.exports = class Organisation {
     this.db = db;
   }
 
-  search(name, options) {
+  async search(name, options) {
     /* return this.db.find(
       { $text: { $search: text } },
       { score: { $meta: 'textScore' } },
     ).sort({ score: { $meta: 'textScore' } }); */
 
-    return this.db.find({
+    const filter = {
       name: {
         $regex: name,
         $options: 'i',
       },
-    })
+    };
+
+    const data = await this.db.find(filter)
       .limit(options.limit)
       .skip(options.skip)
       .sort({ [options.sort]: options.order === 'ascend' ? 1 : -1 });
+
+    const count = await this.count(filter);
+
+    return { data, count };
   }
 
   count(props) {
     return this.db.countDocuments(props);
   }
 
-  find(props, options) {
-    return this.db.find(props)
+  async find(props, options) {
+    const data = await this.db.find(props)
       .limit(options.limit)
       .skip(options.skip)
       .sort({ [options.sort]: options.order === 'ascend' ? 1 : -1 });
+
+    const count = await this.count(filter);
+
+    return { data, count };
   }
 
   findById(_id) {
