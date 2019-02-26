@@ -12,9 +12,9 @@ module.exports = (mongoose) => {
     createdAt: { type: Date },
     role: { type: String, enum: ['ADMIN', 'USER'] },
     organisation: { type: Schema.Types.ObjectId, ref: 'Organisation', autopopulate: true },
-  });
+  }, { timestamps: true, toJSON: { virtuals: true } });
 
-  User.pre('save', function (next) {
+  User.pre('save', function hashPassword(next) {
     const user = this;
 
     if (user.password && user.isModified('password')) {
@@ -24,7 +24,7 @@ module.exports = (mongoose) => {
     next();
   });
 
-  User.methods.comparePassword = async function(password) {
+  User.methods.comparePassword = async function comparePassword(password) {
     return bcrypt.compare(password, this.password);
   };
 

@@ -1,5 +1,3 @@
-const Boom = require('boom');
-
 const geocoder = require('./utils/geocode');
 
 module.exports = (mongoose) => {
