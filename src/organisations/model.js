@@ -1,6 +1,5 @@
 const Boom = require('boom');
 
-const jsonld = require('./utils/jsonld');
 const geocoder = require('./utils/geocode');
 
 module.exports = (mongoose) => {
@@ -106,15 +105,6 @@ module.exports = (mongoose) => {
 
     next();
   });
-
-  Organisation.statics.serializeJSONLD = async function serializeJSONLD(_id) {
-    try {
-      const entry = await this.model('Organisation').findById(_id);
-      return jsonld.serializeOrganisationSchema(entry);
-    } catch (err) {
-      return Boom.notFound();
-    }
-  };
 
   return mongoose.model('Organisation', Organisation);
 };

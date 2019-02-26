@@ -44,14 +44,13 @@ module.exports = class Controller {
     const { _id } = request.params;
     const { accept } = request.headers;
 
-    let res;
+    const res = await this.service.findById(_id);
+    if (!res) return h.notFound();
+
     if (accept === 'application/ld+json') {
-      res = await this.service.findByIdAsJSONLD(_id);
-    } else {
-      res = await this.service.findById(_id);
+      return h.jsonld.serializeOrganisationSchema(res);
     }
 
-    if (!res) return h.notFound();
     return res;
   }
 

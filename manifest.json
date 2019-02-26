@@ -41,6 +41,10 @@
         }
       },
       {
+        "plugin": "./src/json-ld",
+        "options": {}
+      },
+      {
         "plugin": "./src/users",
         "routes": {
           "prefix": "/api/v1/users"
