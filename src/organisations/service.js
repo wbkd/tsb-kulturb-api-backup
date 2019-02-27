@@ -26,12 +26,12 @@ module.exports = class Organisation {
     return { data, count };
   }
 
-  count(props) {
-    return this.db.countDocuments(props);
+  count(filter) {
+    return this.db.countDocuments(filter);
   }
 
-  async find(props, options) {
-    const data = await this.db.find(props)
+  async find(filter, options) {
+    const data = await this.db.find(filter)
       .limit(options.limit)
       .skip(options.skip)
       .sort({ [options.sort]: options.order === 'ascend' ? 1 : -1 });
