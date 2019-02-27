@@ -12,6 +12,7 @@ const address = Joi.string();
 const zipcode = Joi.string().min(3).max(10);
 const city = Joi.string();
 const tags = Joi.array();
+const venues = Joi.array();
 const limit = Joi.number();
 const skip = Joi.number();
 const types = Joi.array().items(Joi.string().valid(['organisation', 'venue']));
@@ -65,6 +66,7 @@ const create = {
     city,
     tags,
     types,
+    venues,
   },
 };
 
@@ -81,6 +83,7 @@ const update = {
     city,
     tags,
     types,
+    venues,
   },
 };
 
