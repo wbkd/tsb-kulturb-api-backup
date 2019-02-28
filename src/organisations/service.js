@@ -31,10 +31,29 @@ module.exports = class Organisation {
   }
 
   async find(filter, options) {
-    const data = await this.db.find(filter)
-      .limit(options.limit)
-      .skip(options.skip)
-      .sort({ [options.sort]: options.order === 'ascend' ? 1 : -1 });
+    // convert array ['name', 'address', ...] to object {'name': 1, 'address': 1, ...}
+    const fields = options.fields
+      ? options.fields
+        .map(field => ({ [field]: 1 }))
+        .reduce((acc, curr) => Object.assign(acc, curr), {
+          tags: 0,
+          users: 0,
+          images: 0,
+          venues: 0,
+          _id: 0,
+        })
+      : {};
+
+    const data = await this.db.find(
+      filter,
+      fields,
+      {
+        limit: options.limit,
+        skip: options.skip,
+        sort: { [options.sort]: options.order === 'ascend' ? 1 : -1 },
+        autopopulate: options.fields,
+      },
+    );
 
     const count = await this.count(filter);
 

@@ -26,6 +26,7 @@ module.exports = class Controller {
       skip = 0,
       sort = 'name',
       order = 'ascend',
+      fields,
       ...filters
     } = request.query;
 
@@ -34,6 +35,7 @@ module.exports = class Controller {
       skip,
       sort,
       order,
+      fields,
     });
   }
 

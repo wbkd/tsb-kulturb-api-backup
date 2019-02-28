@@ -18,6 +18,7 @@ const skip = Joi.number();
 const types = Joi.array().items(Joi.string().valid(['organisation', 'venue']));
 const sort = Joi.string();
 const order = Joi.string().valid(['ascend', 'descend']);
+const fields = Joi.array();
 
 const search = {
   query: {
@@ -44,6 +45,7 @@ const find = {
     types,
     sort,
     order,
+    fields,
   },
 };
 
