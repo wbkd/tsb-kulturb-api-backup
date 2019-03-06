@@ -98,7 +98,7 @@ module.exports = (mongoose) => {
     const organisation = this;
 
     if (organisation.address && (organisation.isModified('address') || organisation.isModified('city') || organisation.isModified('zipcode'))) {
-      organisation.location = geocoder.geocode(organisation);
+      organisation.location = await geocoder.geocode(organisation);
     }
 
     next();
