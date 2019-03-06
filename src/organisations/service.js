@@ -72,8 +72,10 @@ module.exports = class Organisation {
     return this.db.create(entry);
   }
 
-  update(_id, attributes) {
-    return this.db.findByIdAndUpdate(_id, attributes, { new: true });
+  async update(_id, attributes) {
+    const doc = await this.db.findById(_id);
+    Object.assign(doc, attributes);
+    return doc.save();
   }
 
   remove(_id) {
