@@ -4,8 +4,20 @@ module.exports = class Controller {
   }
 
   find(request, h) {
-    const { limit, skip, ...filters } = request.query;
-    return this.service.find(filters, { limit, skip });
+    const {
+      limit,
+      skip,
+      sort = 'name',
+      order = 'ascend',
+      ...filters
+    } = request.query;
+
+    return this.service.find(filters, {
+      limit,
+      skip,
+      sort,
+      order,
+    });
   }
 
   findById(request, h) {

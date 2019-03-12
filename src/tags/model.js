@@ -7,7 +7,7 @@ module.exports = (mongoose) => {
       required: true,
       unique: true,
     },
-  });
+  }, { timestamps: true });
 
   return model('Tag', Tag);
 };
