@@ -12,8 +12,9 @@ const model = require('./model');
 const validation = require('./validation');
 
 const validate = async (db, decoded, request) => {
-  const { _id } = decoded;
-  const user = await db.findById({ _id });
+  const { _id, type } = decoded;
+  if (type !== 'access') return { isValid: false };
+  const user = await db.findById(_id);
   if (!user) {
     return { isValid: false };
   }
@@ -25,7 +26,6 @@ const validate = async (db, decoded, request) => {
   return { isValid: true };
 };
 
-const generateToken = (key, expiresIn) => (_id, email, role) => Jwt.sign({ _id, email, role }, key, { expiresIn });
 
 const register = async (server, options) => {
   const key = options.secret || 'NeverShareYourSecret';
@@ -40,7 +40,7 @@ const register = async (server, options) => {
   });
 
   // register model
-  const User = model(server.mongoose);
+  const { User, Token } = model(server.mongoose);
 
   // add JWT strategy
   server.auth.strategy('jwt', 'jwt', {
@@ -49,13 +49,17 @@ const register = async (server, options) => {
     verifyOptions: { algorithms: ['HS256'] },
   });
 
+  const generateToken = (_id, email, role, type, expiration = expiresIn) => Jwt.sign({
+    _id, email, role, type,
+  }, key, { expiresIn: expiration });
+
   // enable JWT by default
   server.auth.default('jwt');
-  server.decorate('request', 'generateToken', generateToken(key, expiresIn));
+  server.decorate('request', 'generateToken', generateToken);
   server.decorate('request', 'verifyToken', token => Jwt.verify(token, key));
 
   // init service
-  const service = new Service(User);
+  const service = new Service(User, Token);
 
   // init controller
   const controller = new Controller(service);

@@ -1,26 +1,22 @@
 module.exports = class Service {
-  constructor(db) {
+  constructor(db, tokenBlacklist) {
     this.db = db;
+    this.tokenBlacklist = tokenBlacklist;
   }
 
   create({
     email,
     password,
-    verificationToken,
-    verificationExpiresAt,
     role = 'USER',
   }) {
     return this.db.create({
       email,
       password,
-      verificationToken,
-      verificationExpiresAt,
-      createdAt: new Date(),
       role,
     });
   }
 
-  findOne(email, populate = '') {
+  findOne(email) {
     return this.db.findOne({ email });
   }
 
@@ -42,5 +38,13 @@ module.exports = class Service {
     };
 
     return this.db.findByIdAndUpdate(_id, { $unset }, { new: true });
+  }
+
+  addToBlacklist(token) {
+    return this.tokenBlacklist.create({ token });
+  }
+
+  checkBlacklist(token) {
+    return this.tokenBlacklist.findOne({ token });
   }
 };

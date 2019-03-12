@@ -63,13 +63,33 @@ module.exports = class Controller {
     if (!isValid) return h.unauthorized();
 
     const { _id, role } = user;
-    const token = request.generateToken(_id, email, role);
+    const accessToken = request.generateToken(_id, email, role, 'access');
+    const refreshToken = request.generateToken(_id, email, role, 'refresh', '1w');
     return {
       _id,
       role,
       email,
-      token,
+      accessToken,
+      refreshToken,
     };
+  }
+
+  async refreshToken(request, h) {
+    const {
+      token,
+    } = request.query;
+
+    try {
+      const decoded = request.verifyToken(token);
+      const isBlacklisted = await this.service.checkBlacklist(token);
+      if (!decoded || isBlacklisted) return h.unauthorized();
+
+      const { _id, email, role } = decoded;
+      const accessToken = request.generateToken(_id, email, role, 'access');
+      return { accessToken };
+    } catch (err) {
+      return h.unauthorized();
+    }
   }
 
   async passwordReset(request, h) {

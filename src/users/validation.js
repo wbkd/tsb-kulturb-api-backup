@@ -22,6 +22,12 @@ const login = {
   },
 };
 
+const refreshToken = {
+  query: {
+    token,
+  },
+};
+
 const find = {
   email: Joi.string().email(),
   firstname,
@@ -60,6 +66,7 @@ const relation = {
 module.exports = {
   create,
   login,
+  refreshToken,
   find,
   verify,
   changePassword,

@@ -45,6 +45,22 @@ module.exports = (controller, validation) => [
       },
     },
   }, {
+    method: 'GET',
+    path: '/refreshToken',
+    handler: controller.refreshToken,
+    config: {
+      validate: validation.refreshToken,
+      auth: false,
+      tags: ['api'],
+      plugins: {
+        'hapi-rate-limitor': {
+          max: 10,
+          duration: 5 * 60 * 1000,
+          enabled: true,
+        },
+      },
+    },
+  }, {
     method: 'POST',
     path: '/resend-confirmation-email',
     handler: controller.resendConfirmationEmail,

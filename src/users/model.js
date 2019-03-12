@@ -28,5 +28,12 @@ module.exports = (mongoose) => {
     return bcrypt.compare(password, this.password);
   };
 
-  return model('User', User);
+  const Token = new Schema({
+    token: { type: String },
+  }, { timestamps: true });
+
+  return {
+    User: model('User', User),
+    Token: model('Token', Token),
+  };
 };
