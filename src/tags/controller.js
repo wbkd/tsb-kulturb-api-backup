@@ -10,7 +10,6 @@ module.exports = class Controller {
 
   findById(request, h) {
     const { _id } = request.params;
-    const { accept } = request.headers;
     return this.service.findById(_id);
   }
 

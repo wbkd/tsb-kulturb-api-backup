@@ -3,11 +3,15 @@ module.exports = class Tag {
     this.db = db;
   }
 
-  find(props, options = {}) {
-    const query = this.db.find(props);
-    if (options.limit) query.limit(options.limit);
-    if (options.skip) query.skip(options.skip);
-    return query;
+  count(filter) {
+    return this.db.countDocuments(filter);
+  }
+
+  async find(filter, fields, options = {}) {
+    const data = await this.db.find(filter, {}, options);
+    const count = await this.count(filter);
+
+    return { data, count };
   }
 
   findById(_id) {
