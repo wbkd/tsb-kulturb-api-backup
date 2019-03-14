@@ -5,8 +5,8 @@ module.exports = class Controller {
 
   find(request, h) {
     const {
-      limit,
-      skip,
+      limit = 10,
+      skip = 0,
       sort = 'name',
       order = 'ascend',
       ...filters

@@ -22,6 +22,7 @@ const register = async (server, options) => {
   routes.forEach(route => server.route(route));
 
   server.expose('service', service);
+  server.expose('controller', controller);
 
   // create tags
   for (const tag of tags) {
