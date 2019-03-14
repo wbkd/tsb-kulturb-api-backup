@@ -6,7 +6,12 @@ module.exports = (mongoose) => {
   const User = new Schema({
     firstname: { type: String },
     lastname: { type: String },
-    email: { type: String, required: true, index: { unique: true } },
+    email: {
+      type: String,
+      required: true,
+      lowercase: true,
+      index: { unique: true },
+    },
     password: { type: String, required: true },
     verified: { type: Boolean, default: false },
     createdAt: { type: Date },
