@@ -6,7 +6,7 @@ const name = Joi.string();
 const location = Joi.object({
   type: Joi.string().valid('Point'),
   coordinates: Joi.array().length(2).items(Joi.number()),
-});
+}).allow(null);
 const description = Joi.string().allow('');
 const website = Joi.string().uri({ scheme: ['http', 'https'] }).allow('');
 const email = Joi.string().email().allow('');
