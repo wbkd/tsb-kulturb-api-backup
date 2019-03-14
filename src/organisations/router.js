@@ -39,6 +39,27 @@ module.exports = (controller, validation) => [
       },
     },
   }, {
+    method: 'POST',
+    path: '/import',
+    handler: controller.importer,
+    config: {
+      validate: validation.importer,
+      auth: 'jwt',
+      tags: ['api'],
+      plugins: {
+        hapiAuthorization: { role: 'ADMIN' },
+      },
+    },
+  }, {
+    method: 'GET',
+    path: '/export',
+    handler: controller.exporter,
+    config: {
+      validate: validation.exporter,
+      auth: false,
+      tags: ['api'],
+    },
+  }, {
     method: 'PUT',
     path: '/{_id}',
     handler: controller.update,

@@ -1,3 +1,5 @@
+const csv = require('d3-dsv');
+
 module.exports = class Controller {
   constructor(service) {
     this.service = service;
@@ -56,6 +58,59 @@ module.exports = class Controller {
   create(request, h) {
     const { payload } = request;
     return this.service.create(payload);
+  }
+
+  async importer(request, h) {
+    const { file } = request.payload;
+    const { schema } = this.service.db;
+    const { data: tags } = await request.server.plugins.tags.controller
+      .find({ query: { limit: 0 } });
+
+    const data = csv.csvParse(file);
+
+    return Promise.all(data.map((entry) => {
+      // convert venues, tags and types to array
+      Object.keys(entry).forEach((key) => {
+        // check if field is a relation
+        if (Array.isArray(schema.obj[key])) {
+          entry[key] = entry[key].split(',');
+          if (entry[key][0] === '') entry[key] = [];
+        }
+
+        // delete field if empty
+        if (!entry[key]) delete entry[key];
+      });
+
+      if (entry.location) {
+        entry.location = {
+          type: 'Point',
+          coordinates: entry.location.split(','),
+        };
+      }
+
+      if (entry.tags) {
+        entry.tags = entry.tags.map(tag => tags.find(t => t.name === tag));
+      }
+
+      return entry;
+    }).map((entry) => {
+      if (entry._id) {
+        return this.service.update(entry._id, entry);
+      }
+      return this.service.create(entry);
+    }));
+  }
+
+  async exporter(request, h) {
+    // request.query.fields = false;
+    request.query.limit = 0;
+    const { data } = await this.find(request);
+    return csv.csvFormat(data.map(d => d._doc).map((d) => {
+      d.tags = d.tags.map(t => t.name);
+      d.location = d.location && d.location.coordinates;
+      delete d.venues;
+      return d;
+    }));
   }
 
   async update(request, h) {
