@@ -94,14 +94,23 @@ module.exports = (mongoose) => {
     },
   });
 
-  Organisation.pre('save', async function geocode(next) {
-    const organisation = this;
+  const getFullAddress = doc => [doc.address, doc.zipcode, doc.city].join(' ');
 
-    if (organisation.address && (organisation.isModified('address') || organisation.isModified('city') || organisation.isModified('zipcode'))) {
-      organisation.location = await geocoder.geocode(organisation);
+  Organisation.method('fullAddress', function () {
+    return getFullAddress(this);
+  });
+
+  // workaround for https://github.com/Automattic/mongoose/issues/964
+  Organisation.pre('findOneAndUpdate', async function geocode() {
+    const doc = await this.model.findById(this._conditions._id);
+    if (doc.fullAddress() !== getFullAddress(this._update)) {
+      try {
+        this._update.location = await geocoder.geocode(this._update);
+      } catch (err) {
+        this._update.location = undefined;
+        console.log('Error geocoding:', err);
+      }
     }
-
-    next();
   });
 
   return mongoose.model('Organisation', Organisation);

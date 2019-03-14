@@ -2,10 +2,12 @@ const mongoose = require('mongoose');
 const autopopulate = require('mongoose-autopopulate');
 const uniqueValidator = require('mongoose-unique-validator');
 const arrayUniquePlugin = require('mongoose-unique-array');
+const deleteEmptyValuesPlugin = require('./deleteEmptyValuesPlugin');
 
 mongoose.plugin(autopopulate);
 mongoose.plugin(uniqueValidator);
 mongoose.plugin(arrayUniquePlugin);
+mongoose.plugin(deleteEmptyValuesPlugin);
 
 const register = async (server, options) => {
   const url = options.url || 'mongodb://localhost:27017/test';

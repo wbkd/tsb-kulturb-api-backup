@@ -73,11 +73,7 @@ module.exports = class Organisation {
   }
 
   async update(_id, attributes) {
-    // const doc = await this.db.findById(_id);
-    // Object.assign(doc, attributes);
-    // TODO: workaround for https://github.com/Automattic/mongoose/issues/964
-    const doc = await this.db.findByIdAndUpdate(_id, attributes, { new: true });
-    return doc.save();
+    return this.db.findByIdAndUpdate(_id, attributes, { new: true });
   }
 
   remove(_id) {

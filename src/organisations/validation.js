@@ -5,15 +5,15 @@ const _id = ObjectId.required();
 const name = Joi.string();
 const location = Joi.object({
   type: Joi.string().valid('Point'),
-  coordinates: Joi.array().length(2).items(Joi.number())
+  coordinates: Joi.array().length(2).items(Joi.number()),
 });
-const description = Joi.string();
-const website = Joi.string().uri({ scheme: ['http', 'https'] });
-const email = Joi.string().email();
-const telephone = Joi.string();
-const address = Joi.string();
-const zipcode = Joi.string().min(3).max(10);
-const city = Joi.string();
+const description = Joi.string().allow('');
+const website = Joi.string().uri({ scheme: ['http', 'https'] }).allow('');
+const email = Joi.string().email().allow('');
+const telephone = Joi.string().allow('');
+const address = Joi.string().allow('');
+const zipcode = Joi.string().min(3).max(10).allow('');
+const city = Joi.string().allow('');
 const tags = Joi.array();
 const venues = Joi.array();
 const limit = Joi.number();
@@ -75,6 +75,16 @@ const create = {
   },
 };
 
+const importer = {
+  payload: {
+    file: Joi.any().required(),
+  },
+};
+
+const exporter = {
+  query: find.query,
+};
+
 const update = {
   payload: {
     name,
@@ -106,11 +116,27 @@ const relation = {
   },
 };
 
+const failAction = async (request, h, err) => {
+  if (process.env.NODE_ENV === 'production') {
+    // In prod, log a limited error message and throw the default Bad Request error.
+    console.error('ValidationError:', err.message);
+    throw Boom.badRequest(`Invalid request payload input`);
+  } else {
+    // During development, log and respond with the full error.
+    console.error(err);
+    throw err;
+  }
+};
+
+update.failAction = failAction;
+
 module.exports = {
   search,
   find,
   findById,
   create,
+  importer,
+  exporter,
   update,
   remove,
   relation,
