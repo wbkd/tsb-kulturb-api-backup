@@ -102,15 +102,18 @@ module.exports = class Controller {
   }
 
   async exporter(request, h) {
-    // request.query.fields = false;
     request.query.limit = 0;
     const { data } = await this.find(request);
-    return csv.csvFormat(data.map(d => d._doc).map((d) => {
+    const formatted = csv.csvFormat(data.map(d => d._doc).map((d) => {
       d.tags = d.tags.map(t => t.name);
       d.location = d.location && d.location.coordinates;
       delete d.venues;
       return d;
     }));
+
+    return h.response(formatted)
+      .header('Content-type', 'text/csv')
+      .header('Content-Disposition', 'attachment; filename=standorte.csv');
   }
 
   async update(request, h) {
