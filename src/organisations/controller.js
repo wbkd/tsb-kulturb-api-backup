@@ -1,4 +1,4 @@
-const csv = require('d3-dsv');
+const csv = require('./utils/csv');
 
 module.exports = class Controller {
   constructor(service) {
@@ -66,34 +66,8 @@ module.exports = class Controller {
     const { data: tags } = await request.server.plugins.tags.controller
       .find({ query: { limit: 0 } });
 
-    const data = csv.csvParse(file);
-
+    const data = csv.parse(file, schema, tags);
     return Promise.all(data.map((entry) => {
-      // convert venues, tags and types to array
-      Object.keys(entry).forEach((key) => {
-        // check if field is a relation
-        if (Array.isArray(schema.obj[key])) {
-          entry[key] = entry[key].split(',');
-          if (entry[key][0] === '') entry[key] = [];
-        }
-
-        // delete field if empty
-        if (!entry[key]) delete entry[key];
-      });
-
-      if (entry.location) {
-        entry.location = {
-          type: 'Point',
-          coordinates: entry.location.split(','),
-        };
-      }
-
-      if (entry.tags) {
-        entry.tags = entry.tags.map(tag => tags.find(t => t.name === tag));
-      }
-
-      return entry;
-    }).map((entry) => {
       if (entry._id) {
         return this.service.update(entry._id, entry);
       }
@@ -104,13 +78,8 @@ module.exports = class Controller {
   async exporter(request, h) {
     request.query.limit = 0;
     const { data } = await this.find(request);
-    const formatted = csv.csvFormat(data.map(d => d._doc).map((d) => {
-      d.tags = d.tags.map(t => t.name);
-      d.location = d.location && d.location.coordinates;
-      delete d.venues;
-      return d;
-    }));
 
+    const formatted = csv.format(data);
     return h.response(formatted)
       .header('Content-type', 'text/csv')
       .header('Content-Disposition', 'attachment; filename=standorte.csv');
