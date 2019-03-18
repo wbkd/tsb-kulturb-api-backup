@@ -4,7 +4,7 @@
     "routes": {
       "cors": {
         "origin": [
-          "*://localhost:*",
+          "*",
           "https://*.netlify.com"
         ],
         "additionalHeaders": ["cache-control", "x-requested-with", "authorization"]
