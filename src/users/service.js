@@ -8,11 +8,13 @@ module.exports = class Service {
     email,
     password,
     role = 'USER',
+    verified = false,
   }) {
     return this.db.create({
       email,
       password,
       role,
+      verified,
     });
   }
 

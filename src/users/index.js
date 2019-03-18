@@ -84,6 +84,7 @@ const register = async (server, options) => {
           email,
           password,
           role: 'ADMIN',
+          verified: true,
         });
       } catch (err) {
         console.log('Admin already exists');
