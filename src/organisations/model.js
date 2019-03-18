@@ -103,7 +103,7 @@ module.exports = (mongoose) => {
   // workaround for https://github.com/Automattic/mongoose/issues/964
   Organisation.pre('findOneAndUpdate', async function geocode() {
     const doc = await this.model.findById(this._conditions._id);
-    if (doc.fullAddress() !== getFullAddress(this._update)) {
+    if (doc && (doc.fullAddress() !== getFullAddress(this._update))) {
       try {
         this._update.location = await geocoder.geocode(this._update);
       } catch (err) {
