@@ -1,4 +1,6 @@
+const Bottleneck = require('bottleneck');
 const csv = require('./utils/csv');
+const osm = require('./utils/osm');
 
 module.exports = class Controller {
   constructor(service) {
@@ -58,6 +60,38 @@ module.exports = class Controller {
   create(request, h) {
     const { payload } = request;
     return this.service.create(payload);
+  }
+
+  async getOSMData(request, h) {
+    request.query.limit = 0;
+    const { data: entries } = await this.find(request);
+
+    const limiter = new Bottleneck({
+      maxConcurrent: 1,
+      minTime: 1000,
+    });
+
+    await limiter.schedule(() => {
+      const promises = entries.map(async (entry) => {
+        const results = await osm.getOSMData(entry);
+
+        if (results) {
+          const {
+            accessibility,
+            openingHours,
+          } = results;
+
+          const res = {};
+          if (accessibility) res.accessibility = accessibility;
+          if (openingHours) res.openingHours = openingHours;
+
+          return this.service.update(entry._id, res);
+        }
+      });
+      return Promise.all(promises);
+    });
+
+    return { success: true };
   }
 
   async importer(request, h) {

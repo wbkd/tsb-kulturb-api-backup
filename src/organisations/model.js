@@ -38,11 +38,14 @@ module.exports = (mongoose) => {
     accessibility: {
       type: String,
       enum: [
-        'full',
-        'partially',
-        'none',
+        'yes',
+        'limited',
+        'no',
         'unknown',
       ],
+    },
+    openingHours: {
+      type: String,
     },
     types: [{
       type: String,
@@ -103,7 +106,11 @@ module.exports = (mongoose) => {
   // workaround for https://github.com/Automattic/mongoose/issues/964
   Organisation.pre('findOneAndUpdate', async function geocode() {
     const doc = await this.model.findById(this._conditions._id);
-    if (doc && (doc.fullAddress() !== getFullAddress(this._update))) {
+    if (
+      doc
+        && this._update.address && this._update.zipcode && this._update.city
+        && (doc.fullAddress() !== getFullAddress(this._update))
+    ) {
       try {
         this._update.location = await geocoder.geocode(this._update);
       } catch (err) {

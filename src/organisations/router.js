@@ -28,6 +28,17 @@ module.exports = (controller, validation) => [
     },
   }, {
     method: 'POST',
+    path: '/osm',
+    handler: controller.getOSMData,
+    config: {
+      auth: 'jwt',
+      tags: ['api'],
+      plugins: {
+        hapiAuthorization: { role: 'ADMIN' },
+      },
+    },
+  }, {
+    method: 'POST',
     path: '/',
     handler: controller.create,
     config: {

@@ -25,6 +25,7 @@
     "bcrypt": "^3.0.3",
     "blipp": "^3.1.2",
     "boom": "^7.3.0",
+    "bottleneck": "^2.17.1",
     "catbox": "^10.0.6",
     "catbox-memory": "^4.0.1",
     "csvtojson": "^2.0.8",
