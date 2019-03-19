@@ -10,7 +10,13 @@ const geocode = async (entry) => {
       jsonattributes: 1,
     },
   });
-  const { latitude, longitude } = JSON.parse(response.body).response.view[0].result[0].location.displayPosition;
+
+  const { latitude, longitude } = JSON.parse(response.body)
+    .response
+    .view[0]
+    .result[0]
+    .location
+    .displayPosition;
 
   return {
     type: 'Point',
