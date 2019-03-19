@@ -22,6 +22,7 @@ const types = Joi.array().items(Joi.string().valid(['organisation', 'venue']));
 const sort = Joi.string();
 const order = Joi.string().valid(['ascend', 'descend']);
 const fields = Joi.array();
+const accessibility = Joi.string().valid(['yes', 'no', 'limited', 'unknown']);
 
 const search = {
   query: {
@@ -42,6 +43,7 @@ const find = {
     address,
     zipcode,
     city,
+    accessibility,
     tags,
     limit,
     skip,
@@ -69,6 +71,7 @@ const create = {
     address,
     zipcode,
     city,
+    accessibility,
     tags,
     types,
     venues,
@@ -96,6 +99,7 @@ const update = {
     address,
     zipcode,
     city,
+    accessibility,
     tags,
     types,
     venues,
