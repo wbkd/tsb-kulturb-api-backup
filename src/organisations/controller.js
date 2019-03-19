@@ -68,10 +68,10 @@ module.exports = class Controller {
 
     const limiter = new Bottleneck({
       maxConcurrent: 1,
-      minTime: 1000,
+      minTime: 1500,
     });
 
-    await limiter.schedule(() => {
+    limiter.schedule(() => {
       const promises = entries.map(async (entry) => {
         const results = await osm.getOSMData(entry);
 
@@ -91,7 +91,7 @@ module.exports = class Controller {
       return Promise.all(promises);
     });
 
-    return { success: true };
+    return { running: true };
   }
 
   async importer(request, h) {
