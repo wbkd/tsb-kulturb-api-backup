@@ -35,14 +35,20 @@ module.exports = (mongoose) => {
       ref: 'Tag',
       autopopulate: true,
     }],
-    accessibility: {
+    accessibility_wheelchair: {
       type: String,
       enum: [
         'yes',
-        'limited',
         'no',
+        'limited',
         'unknown',
       ],
+    },
+    accessibility_blind: {
+      type: String,
+    },
+    accessibility_deaf: {
+      type: String,
     },
     openingHours: {
       type: String,
@@ -117,6 +123,22 @@ module.exports = (mongoose) => {
         this._update.location = undefined;
         console.log('Error geocoding:', err);
       }
+
+/*       try {
+        const {
+          osmId,
+          wikidataId,
+          accessibility,
+          openingHours,
+        } = await osm.getOSMData(this._update);
+
+        if (osmId) this._update.osmId = osmId;
+        if (wikidataId) this._update.wikidataId = wikidataId;
+        if (accessibility) this._update.accessibility = accessibility;
+        if (openingHours) this._update.openingHours = openingHours;
+      } catch (err) {
+        this._update.accessibility = undefined;
+      } */
     }
   });
 
