@@ -24,6 +24,7 @@ const order = Joi.string().valid(['ascend', 'descend']);
 const fields = Joi.array();
 const accessibility = Joi.string().valid(['yes', 'no', 'limited', 'unknown']);
 const published = Joi.boolean();
+const openingHours = Joi.string();
 
 const search = {
   query: {
@@ -46,6 +47,7 @@ const find = {
     zipcode,
     city,
     accessibility,
+    openingHours,
     tags,
     limit,
     skip,
@@ -75,6 +77,7 @@ const create = {
     zipcode,
     city,
     accessibility,
+    openingHours,
     tags,
     types,
     venues,
@@ -104,6 +107,7 @@ const update = {
     zipcode,
     city,
     accessibility,
+    openingHours,
     tags,
     types,
     venues,
