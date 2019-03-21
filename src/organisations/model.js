@@ -18,6 +18,7 @@ module.exports = (mongoose) => {
   const Organisation = new Schema({
     name: { type: String, required: true },
     description: { type: String },
+    published: { type: Boolean, default: false },
     website: { type: String },
     email: { type: String },
     telephone: { type: String },

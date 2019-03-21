@@ -23,6 +23,7 @@ const sort = Joi.string();
 const order = Joi.string().valid(['ascend', 'descend']);
 const fields = Joi.array();
 const accessibility = Joi.string().valid(['yes', 'no', 'limited', 'unknown']);
+const published = Joi.boolean();
 
 const search = {
   query: {
@@ -37,6 +38,7 @@ const find = {
     name,
     location,
     description,
+    published,
     website,
     email,
     telephone,
@@ -65,6 +67,7 @@ const create = {
     name: name.required(),
     location,
     description,
+    published,
     website,
     email,
     telephone,
@@ -93,6 +96,7 @@ const update = {
     name,
     location,
     description,
+    published,
     website,
     email,
     telephone,
