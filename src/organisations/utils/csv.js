@@ -24,7 +24,7 @@ const parse = (file, schema, tags) => {
     }
 
     if (entry.tags) {
-      entry.tags = entry.tags.map(tag => tags.find(t => t.name === tag));
+      entry.tags = tags.filter(tag => entry.tags.find(t => t === tag.name));
     }
 
     return entry;
