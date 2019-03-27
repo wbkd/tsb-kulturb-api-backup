@@ -126,22 +126,26 @@ module.exports = (mongoose) => {
         console.log('Error geocoding:', err);
       }
     }
+  });
 
+  Organisation.pre('save', async function importOSMData(next) {
     try {
       const {
         accessibilityWheelchair,
         accessibilityBlind,
         accessibilityDeaf,
         openingHours,
-      } = await osm.getOSMData(this._update);
+      } = await osm.getOSMData(this);
 
-      if (accessibilityWheelchair && !doc.accessibility_wheelchair && !this._update.accessibility_wheelchair) this._update.accessibility_wheelchair = accessibilityWheelchair;
-      if (accessibilityBlind && !doc.accessibility_blind && !this._update.accessibility_blind) this._update.accessibility_blind = accessibilityBlind;
-      if (accessibilityDeaf && !doc.accessibility_deaf && !this._update.accessibility_deaf) this._update.accessibility_deaf = accessibilityDeaf;
-      if (openingHours && !doc.openingHours) this._update.openingHours = openingHours;
+      if (accessibilityWheelchair && !this.accessibility_wheelchair) this.accessibility_wheelchair = accessibilityWheelchair;
+      if (accessibilityBlind && !this.accessibility_blind) this.accessibility_blind = accessibilityBlind;
+      if (accessibilityDeaf && !this.accessibility_deaf) this.accessibility_deaf = accessibilityDeaf;
+      if (openingHours && !this.openingHours) this.openingHours = openingHours;
     } catch (err) {
-      this._update.accessibility_wheelchair = undefined;
+      console.log(err);
     }
+
+    next();
   });
 
   return mongoose.model('Organisation', Organisation);
