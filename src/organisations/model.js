@@ -128,6 +128,14 @@ module.exports = (mongoose) => {
     }
   });
 
+  Organisation.pre('save', async function geocode(next) {
+    if (this.address && this.zipcode && this.city) {
+      this.location = await geocoder.geocode(this);
+    }
+
+    next();
+  });
+
   Organisation.pre('save', async function importOSMData(next) {
     try {
       const {
