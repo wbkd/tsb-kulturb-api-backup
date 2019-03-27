@@ -1,4 +1,5 @@
 const geocoder = require('./utils/geocode');
+const osm = require('./utils/osm');
 
 module.exports = (mongoose) => {
   const { Schema } = mongoose;
@@ -124,22 +125,22 @@ module.exports = (mongoose) => {
         this._update.location = undefined;
         console.log('Error geocoding:', err);
       }
+    }
 
-/*       try {
-        const {
-          osmId,
-          wikidataId,
-          accessibility,
-          openingHours,
-        } = await osm.getOSMData(this._update);
+    try {
+      const {
+        accessibilityWheelchair,
+        accessibilityBlind,
+        accessibilityDeaf,
+        openingHours,
+      } = await osm.getOSMData(this._update);
 
-        if (osmId) this._update.osmId = osmId;
-        if (wikidataId) this._update.wikidataId = wikidataId;
-        if (accessibility) this._update.accessibility = accessibility;
-        if (openingHours) this._update.openingHours = openingHours;
-      } catch (err) {
-        this._update.accessibility = undefined;
-      } */
+      if (accessibilityWheelchair && !doc.accessibility_wheelchair && !this._update.accessibility_wheelchair) this._update.accessibility_wheelchair = accessibilityWheelchair;
+      if (accessibilityBlind && !doc.accessibility_blind && !this._update.accessibility_blind) this._update.accessibility_blind = accessibilityBlind;
+      if (accessibilityDeaf && !doc.accessibility_deaf && !this._update.accessibility_deaf) this._update.accessibility_deaf = accessibilityDeaf;
+      if (openingHours && !doc.openingHours) this._update.openingHours = openingHours;
+    } catch (err) {
+      this._update.accessibility_wheelchair = undefined;
     }
   });
 

@@ -68,27 +68,33 @@ module.exports = class Controller {
 
     const limiter = new Bottleneck({
       maxConcurrent: 1,
-      minTime: 1500,
+      minTime: 2000,
     });
 
-    limiter.schedule(() => {
-      const promises = entries.map(async (entry) => {
-        const results = await osm.getOSMData(entry);
+    const results = await limiter.schedule(() => {
+      const promises = entries.map(entry => osm.getOSMData(entry));
+      return Promise.all(promises)
+        .then(() => console.log('OSM importer done'));
+    });
 
-        if (results) {
-          const {
-            accessibility,
-            openingHours,
-          } = results;
+    results.map((result) => {
+      if (result) {
+        const {
+          accessibilityWheelchair,
+          accessibilityBlind,
+          accessibilityDeaf,
+          openingHours,
+          _id,
+        } = result;
 
-          const res = {};
-          if (accessibility) res.accessibility = accessibility;
-          if (openingHours) res.openingHours = openingHours;
+        const res = {};
+        if (accessibilityWheelchair) res.accessibility_wheelchair = accessibilityWheelchair;
+        if (accessibilityBlind) res.accessibility_blind = accessibilityBlind;
+        if (accessibilityDeaf) res.accessibility_deaf = accessibilityDeaf;
+        if (openingHours) res.openingHours = openingHours;
 
-          return this.service.update(entry._id, res);
-        }
-      });
-      return Promise.all(promises);
+        return this.service.update(_id, res);
+      }
     });
 
     return { running: true };

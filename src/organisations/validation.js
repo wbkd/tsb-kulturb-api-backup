@@ -22,7 +22,9 @@ const types = Joi.array().items(Joi.string().valid(['organisation', 'venue']));
 const sort = Joi.string();
 const order = Joi.string().valid(['ascend', 'descend']);
 const fields = Joi.array();
-const accessibility = Joi.string().valid(['yes', 'no', 'limited', 'unknown']);
+const accessibility_wheelchair = Joi.string().valid(['yes', 'no', 'limited', 'unknown']);
+const accessibility_blind = Joi.string().allow('');
+const accessibility_deaf = Joi.string().allow('');
 const published = Joi.boolean();
 const openingHours = Joi.string();
 
@@ -46,7 +48,9 @@ const find = {
     address,
     zipcode,
     city,
-    accessibility,
+    accessibility_wheelchair,
+    accessibility_blind,
+    accessibility_deaf,
     openingHours,
     tags,
     limit,
@@ -76,7 +80,9 @@ const create = {
     address,
     zipcode,
     city,
-    accessibility,
+    accessibility_wheelchair,
+    accessibility_blind,
+    accessibility_deaf,
     openingHours,
     tags,
     types,
@@ -106,7 +112,9 @@ const update = {
     address,
     zipcode,
     city,
-    accessibility,
+    accessibility_wheelchair,
+    accessibility_blind,
+    accessibility_deaf,
     openingHours,
     tags,
     types,
