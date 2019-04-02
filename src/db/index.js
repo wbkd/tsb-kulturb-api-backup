@@ -13,7 +13,10 @@ const register = async (server, options) => {
   const url = options.url || 'mongodb://localhost:27017/test';
 
   try {
-    const db = await mongoose.connect(url, { useNewUrlParser: true });
+    const db = await mongoose.connect(url, {
+      useCreateIndex: true,
+      useNewUrlParser: true,
+    });
 
     server.decorate('server', 'mongoose', db);
     server.decorate('request', 'models', db.models);
