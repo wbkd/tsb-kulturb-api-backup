@@ -36,7 +36,7 @@ const getOSMData = async (entry) => {
         res.accessibilityBlind = data['blind:description:de'] || data['blind:description:en'];
       }
       if (data['deaf:description:de'] || data['deaf:description:en']) {
-        res.accessibilityDeaf = data['deaf:description:de'] || data['blind:description:en'];
+        res.accessibilityDeaf = data['deaf:description:de'] || data['deaf:description:en'];
       }
     } catch (err) {
       console.log(err);
