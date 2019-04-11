@@ -76,6 +76,7 @@ module.exports = class Controller {
       return Promise.all(promises);
     });
 
+    console.log('OSM importer done.', results);
     results.map((result) => {
       if (result) {
         if (Object.keys(result) === ['_id']) return;
