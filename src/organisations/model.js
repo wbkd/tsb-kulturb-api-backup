@@ -4,6 +4,34 @@ const osm = require('./utils/osm');
 module.exports = (mongoose) => {
   const { Schema } = mongoose;
 
+  const accessibilitySchema = {
+    deaf: {
+      subtitles: { type: Boolean },
+      signLanguage: { type: Boolean },
+      hearingAid: { type: Boolean },
+      description: { type: String },
+    },
+    blind: {
+      braille: { type: Boolean },
+      guidance: { type: Boolean },
+      audioguide: { type: Boolean },
+      description: { type: String },
+    },
+    wheelchair: {
+      accessible: {
+        type: String,
+        enum: [
+          'yes',
+          'no',
+          'limited',
+          'unknown',
+        ],
+      },
+      toilets: { type: Boolean },
+      description: { type: String },
+    },
+  };
+
   const pointSchema = new Schema({
     type: {
       type: String,
@@ -37,21 +65,7 @@ module.exports = (mongoose) => {
       ref: 'Tag',
       autopopulate: true,
     }],
-    accessibility_wheelchair: {
-      type: String,
-      enum: [
-        'yes',
-        'no',
-        'limited',
-        'unknown',
-      ],
-    },
-    accessibility_blind: {
-      type: String,
-    },
-    accessibility_deaf: {
-      type: String,
-    },
+    accessibility: { type: accessibilitySchema },
     openingHours: {
       type: String,
     },
@@ -145,9 +159,18 @@ module.exports = (mongoose) => {
         openingHours,
       } = await osm.getOSMData(this);
 
-      if (accessibilityWheelchair && !this.accessibility_wheelchair) this.accessibility_wheelchair = accessibilityWheelchair;
-      if (accessibilityBlind && !this.accessibility_blind) this.accessibility_blind = accessibilityBlind;
-      if (accessibilityDeaf && !this.accessibility_deaf) this.accessibility_deaf = accessibilityDeaf;
+      if (accessibilityWheelchair && !this.accessibility.wheelchair.accessible) {
+        this.accessibility.wheelchair.accessible = accessibilityWheelchair;
+      }
+
+      if (accessibilityBlind && !this.accessibility.blind.description) {
+        this.accessibility.blind.description = accessibilityBlind;
+      }
+
+      if (accessibilityDeaf && !this.accessibility.deaf.description) {
+        this.accessibility.deaf.description = accessibilityDeaf;
+      }
+
       if (openingHours && !this.openingHours) this.openingHours = openingHours;
     } catch (err) {
       console.log(err);

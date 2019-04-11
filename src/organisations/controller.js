@@ -73,12 +73,13 @@ module.exports = class Controller {
 
     const results = await limiter.schedule(() => {
       const promises = entries.map(entry => osm.getOSMData(entry));
-      return Promise.all(promises)
-        .then(() => console.log('OSM importer done'));
+      return Promise.all(promises);
     });
 
     results.map((result) => {
       if (result) {
+        if (Object.keys(result) === ['_id']) return;
+
         const {
           accessibilityWheelchair,
           accessibilityBlind,
@@ -87,11 +88,20 @@ module.exports = class Controller {
           _id,
         } = result;
 
-        const res = {};
-        if (accessibilityWheelchair) res.accessibility_wheelchair = accessibilityWheelchair;
-        if (accessibilityBlind) res.accessibility_blind = accessibilityBlind;
-        if (accessibilityDeaf) res.accessibility_deaf = accessibilityDeaf;
-        if (openingHours) res.openingHours = openingHours;
+        const accessibility = {};
+        if (accessibilityWheelchair || accessibilityBlind || accessibilityDeaf) {
+          if (accessibilityWheelchair) {
+            accessibility.wheelchair = { accessible: accessibilityWheelchair };
+          }
+          if (accessibilityBlind) accessibility.blind = { description: accessibilityBlind };
+          if (accessibilityDeaf) accessibility.deaf = { description: accessibilityDeaf };
+        }
+
+        let res = {};
+        if (openingHours) res = { openingHours };
+        if (Object.entries(accessibility).length) {
+          res.accessibility = accessibility;
+        }
 
         return this.service.update(_id, res);
       }
