@@ -132,7 +132,7 @@ module.exports = class Controller {
     const formatted = csv.format(data);
     return h.response(formatted)
       .header('Content-type', 'text/csv')
-      .header('Content-Disposition', 'attachment; filename=standorte.csv');
+      .header('Content-Disposition', 'attachment; filename=kulturorte.csv');
   }
 
   async update(request, h) {
