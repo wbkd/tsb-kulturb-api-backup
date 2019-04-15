@@ -23,6 +23,7 @@ const sort = Joi.string();
 const order = Joi.string().valid(['ascend', 'descend']);
 const fields = Joi.array();
 const published = Joi.boolean();
+const funded = Joi.boolean();
 const openingHours = Joi.string();
 const accessibility = Joi.object({
   wheelchair: Joi.object({
@@ -42,6 +43,12 @@ const accessibility = Joi.object({
     hearingAid: Joi.bool(),
     description: Joi.string(),
   }),
+});
+const transportation = Joi.object({
+  tram: Joi.string().max(130),
+  bus: Joi.string().max(130),
+  subway: Joi.string().max(130),
+  railway: Joi.string().max(130),
 });
 
 const search = {
@@ -65,6 +72,8 @@ const find = {
     zipcode,
     city,
     accessibility,
+    transportation,
+    funded,
     openingHours,
     tags,
     limit,
@@ -95,6 +104,8 @@ const create = {
     zipcode,
     city,
     accessibility,
+    transportation,
+    funded,
     openingHours,
     tags,
     types,
@@ -125,6 +136,8 @@ const update = {
     zipcode,
     city,
     accessibility,
+    transportation,
+    funded,
     openingHours,
     tags,
     types,

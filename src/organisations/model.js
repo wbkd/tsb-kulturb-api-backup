@@ -32,6 +32,13 @@ module.exports = (mongoose) => {
     },
   };
 
+  const transportationSchema = {
+    tram: { type: String },
+    bus: { type: String },
+    subway: { type: String },
+    railway: { type: String },
+  };
+
   const pointSchema = new Schema({
     type: {
       type: String,
@@ -55,6 +62,7 @@ module.exports = (mongoose) => {
     zipcode: { type: String },
     city: { type: String },
     location: { type: pointSchema },
+    funded: { type: Boolean },
     venues: [{
       type: Schema.Types.ObjectId,
       ref: 'Organisation',
@@ -66,6 +74,7 @@ module.exports = (mongoose) => {
       autopopulate: true,
     }],
     accessibility: { type: accessibilitySchema },
+    transportation: { type: transportationSchema },
     openingHours: {
       type: String,
     },
