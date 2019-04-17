@@ -24,31 +24,31 @@ const order = Joi.string().valid(['ascend', 'descend']);
 const fields = Joi.array();
 const published = Joi.boolean();
 const funded = Joi.boolean();
-const openingHours = Joi.string();
+const openingHours = Joi.string().allow('');
 const accessibility = Joi.object({
   wheelchair: Joi.object({
     accessible: Joi.string().valid(['yes', 'no', 'limited', 'unknown']),
     toilets: Joi.bool(),
-    description: Joi.string(),
+    description: Joi.string().allow(''),
   }),
   blind: Joi.object({
     braille: Joi.bool(),
     guidance: Joi.bool(),
     audioguide: Joi.bool(),
-    description: Joi.string(),
+    description: Joi.string().allow(''),
   }),
   deaf: Joi.object({
     subtitles: Joi.bool(),
     signLanguage: Joi.bool(),
     hearingAid: Joi.bool(),
-    description: Joi.string(),
+    description: Joi.string().allow(''),
   }),
 });
 const transportation = Joi.object({
-  tram: Joi.string().max(130),
-  bus: Joi.string().max(130),
-  subway: Joi.string().max(130),
-  railway: Joi.string().max(130),
+  tram: Joi.string().max(130).allow(''),
+  bus: Joi.string().max(130).allow(''),
+  subway: Joi.string().max(130).allow(''),
+  railway: Joi.string().max(130).allow(''),
 });
 
 const search = {
