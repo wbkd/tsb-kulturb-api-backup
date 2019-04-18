@@ -7,7 +7,7 @@ module.exports = (mongoose) => {
     path: { type: String, required: true, unique: true },
     type: {
       type: String,
-      enum: ['logo', 'image'],
+      enum: ['logo', 'teaser'],
       required: true,
     },
     location: {

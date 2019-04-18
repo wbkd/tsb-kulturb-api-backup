@@ -6,7 +6,7 @@ const _id = ObjectId.required();
 const create = {
   payload: {
     relation: Joi.string().valid(['location', 'venue']).required(),
-    type: Joi.string().valid(['logo', 'image']).required(),
+    type: Joi.string().valid(['logo', 'teaser']).required(),
     relId: _id.required(),
     file: Joi.any().required(),
   },

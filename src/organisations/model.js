@@ -119,6 +119,18 @@ module.exports = (mongoose) => {
     },
   });
 
+  Organisation.virtual('teaser', {
+    ref: 'File',
+    localField: '_id',
+    foreignField: 'location',
+    justOne: true,
+    autopopulate: {
+      match: { type: 'teaser' },
+      maxDepth: 1,
+    },
+  });
+
+
   Organisation.virtual('images', {
     ref: 'File',
     localField: '_id',
