@@ -12,10 +12,10 @@ const isOwnOrganisation = async (request, h) => {
   if (!user.organisation) return h.unauthorized();
 
   // user is organisation member and can update it
-  if (user.organisation.toString() === _id) return h.continue;
+  if (user.organisation.id === _id) return h.continue;
 
   // user is organisation member and can update it
-  if (user.organisation.toString() === _id) return h.continue;
+  if (user.organisation.id === _id) return h.continue;
 
   // user is organisation member and can upload a file related to it
   if (request.path.includes('/file')) {

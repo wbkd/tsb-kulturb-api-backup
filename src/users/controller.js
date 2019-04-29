@@ -3,27 +3,88 @@ module.exports = class Controller {
     this.service = service;
   }
 
-  async signup(request, h) {
-    const { email, password } = request.payload;
+  search(request, h) {
+    const {
+      name,
+      limit = 10,
+      skip = 0,
+      sort = 'name',
+      order = 'ascend',
+    } = request.query;
 
-    const user = await this.service.findOne(email);
+    return this.service.search(name, {
+      limit,
+      skip,
+      sort,
+      order,
+    });
+  }
+
+  find(request, h) {
+    const {
+      limit = 10,
+      skip = 0,
+      sort = 'name',
+      order = 'ascend',
+      fields,
+      ...filters
+    } = request.query;
+
+    return this.service.find(filters, {
+      limit,
+      skip,
+      sort,
+      order,
+      fields,
+    });
+  }
+
+  async findById(request, h) {
+    const { _id } = request.params;
+
+    const res = await this.service.findById(_id);
+    if (!res) return h.notFound();
+
+    return res;
+  }
+
+  async update(request, h) {
+    const { _id } = request.params;
+    const { payload } = request;
+    const res = await this.service.update(_id, payload);
+
+    if (!res) return h.notFound();
+    return res;
+  }
+
+  async remove(request, h) {
+    const { _id } = request.params;
+    const res = await this.service.remove(_id);
+
+    if (!res) return h.notFound();
+    return res;
+  }
+
+  async signup(request, h) {
+    const { email, password, organisation } = request.payload;
+
+    const user = await this.service.findByEmail(email);
     if (user) return h.badRequest('Already Registered');
 
     const verificationToken = request.generateToken(null, email);
     request.sendVerificationEmail(email, verificationToken);
 
-    await this.service.create({
+    return this.service.create({
       email,
       password,
+      organisation,
     });
-
-    return { success: true };
   }
 
   async resendConfirmationEmail(request, h) {
     const { email } = request.payload;
 
-    const user = await this.service.findOne(email);
+    const user = await this.service.findByEmail(email);
     if (!user) return h.unauthorized();
     if (user.verified) return h.badRequest();
 
@@ -35,7 +96,7 @@ module.exports = class Controller {
   async verify(request, h) {
     const { email, token } = request.query;
 
-    const user = await this.service.findOne(email);
+    const user = await this.service.findByEmail(email);
     if (!user) return h.unauthorized();
 
     try {
@@ -54,7 +115,7 @@ module.exports = class Controller {
   async login(request, h) {
     const { email, password } = request.payload;
 
-    const user = await this.service.findOne(email);
+    const user = await this.service.findByEmail(email);
     if (!user) return h.unauthorized();
 
     if (!user.verified) return h.unauthorized('Please confirm your email address');
@@ -62,13 +123,11 @@ module.exports = class Controller {
     const isValid = await user.comparePassword(password);
     if (!isValid) return h.unauthorized();
 
-    const { _id, role } = user;
+    const { _id, role, _doc } = user;
     const accessToken = request.generateToken(_id, email, role, 'access');
     const refreshToken = request.generateToken(_id, email, role, 'refresh', '1w');
     return {
-      _id,
-      role,
-      email,
+      ..._doc,
       accessToken,
       refreshToken,
     };
@@ -127,7 +186,7 @@ module.exports = class Controller {
   async changeRole(request, h) {
     const { email, role } = request.payload;
 
-    const user = await this.service.findOne(email);
+    const user = await this.service.findByEmail(email);
     if (!user) return h.unauthorized();
 
     user.role = role;
@@ -137,7 +196,7 @@ module.exports = class Controller {
   info(request, h) {
     const { email } = request.auth.credentials;
     const { populate } = request.query;
-    return this.service.findOne(email, populate);
+    return this.service.findByEmail(email, populate);
   }
 
   handleRelation(request, h) {
