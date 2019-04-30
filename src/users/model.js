@@ -29,6 +29,18 @@ module.exports = (mongoose) => {
     next();
   });
 
+  User.pre('findOneAndUpdate', async function hashPassword() {
+    const doc = await this.model.findById(this._conditions._id);
+    if (doc && this._update.password) {
+      try {
+        this._update.password = bcrypt.hashSync(this._update.password, bcrypt.genSaltSync(8));
+      } catch (err) {
+        delete this._update.password;
+      }
+    }
+  });
+
+
   User.methods.comparePassword = async function comparePassword(password) {
     return bcrypt.compare(password, this.password);
   };
