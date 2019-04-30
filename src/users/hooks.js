@@ -1,4 +1,4 @@
-const zxcvbn = require('zxcvbn');
+const owasp = require('owasp-password-strength-test');
 const Redactyl = require('redactyl.js');
 
 const redactyl = new Redactyl({
@@ -15,11 +15,10 @@ const omitCredentials = async (request, h) => {
 
 const passwordStrength = async (request, h) => {
   const { password } = request.payload;
-  const strength = zxcvbn(password);
-  if (strength.score < 4) return h.badRequest(strength.feedback.warning);
+  const strength = owasp.test(password);
+  if (!strength.strong) return h.badRequest(strength.errors);
   return h.continue;
 };
-
 module.exports = {
   omitCredentials,
   passwordStrength,

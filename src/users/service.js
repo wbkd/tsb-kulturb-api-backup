@@ -4,12 +4,13 @@ module.exports = class Service {
     this.tokenBlacklist = tokenBlacklist;
   }
 
-  async search(email, options) {
+  async search({ name, ...filters }, options) {
     const filter = {
       email: {
-        $regex: email,
+        $regex: name,
         $options: 'i',
       },
+      ...filters,
     };
 
     const data = await this.db.find(filter)

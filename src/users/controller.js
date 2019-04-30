@@ -10,9 +10,10 @@ module.exports = class Controller {
       skip = 0,
       sort = 'name',
       order = 'ascend',
+      ...filters
     } = request.query;
 
-    return this.service.search(name, {
+    return this.service.search({ name, ...filters }, {
       limit,
       skip,
       sort,
