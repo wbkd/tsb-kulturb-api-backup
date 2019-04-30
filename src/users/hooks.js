@@ -16,8 +16,11 @@ const omitCredentials = async (request, h) => {
 const passwordStrength = async (request, h) => {
   const { password } = request.payload;
   if (password) {
+    /*
     const strength = owasp.test(password);
     if (!strength.strong) return h.badRequest(strength.errors);
+    */
+    if (password.length < 8) return h.badRequest('Password must be at least 8 characters');
   }
   return h.continue;
 };
