@@ -130,16 +130,6 @@ module.exports = (mongoose) => {
     },
   });
 
-
-  Organisation.virtual('images', {
-    ref: 'File',
-    localField: '_id',
-    foreignField: 'location',
-    autopopulate: {
-      maxDepth: 1,
-    },
-  });
-
   const getFullAddress = doc => [doc.address, doc.zipcode, doc.city].join(' ');
 
   Organisation.method('fullAddress', function () {

@@ -38,7 +38,6 @@ module.exports = class Organisation {
         .reduce((acc, curr) => Object.assign(acc, curr), {
           tags: 0,
           users: 0,
-          images: 0,
           venues: 0,
           _id: 0,
         })
