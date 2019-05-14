@@ -12,6 +12,9 @@ module.exports = (mongoose) => {
       description: { type: String },
     },
     blind: {
+      german_language: { type: Boolean },
+      other_languages: [{ type: String }],
+      easy_language: { type: Boolean },
       braille: { type: Boolean },
       guidance: { type: Boolean },
       audioguide: { type: Boolean },

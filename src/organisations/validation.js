@@ -32,15 +32,21 @@ const accessibility = Joi.object({
     description: Joi.string().allow(''),
   }),
   blind: Joi.object({
+    germanLanguage: Joi.bool(),
+    otherLanguages: Joi.array(),
+    easyLanguage: Joi.bool(),
     braille: Joi.bool(),
     guidance: Joi.bool(),
     audioguide: Joi.bool(),
     description: Joi.string().allow(''),
   }),
   deaf: Joi.object({
+    germanLanguage: Joi.bool(),
+    easyLanguage: Joi.bool(),
     subtitles: Joi.bool(),
     signLanguage: Joi.bool(),
     hearingAid: Joi.bool(),
+    videoGuide: Joi.bool(),
     description: Joi.string().allow(''),
   }),
 });
