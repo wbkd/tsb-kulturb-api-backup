@@ -6,15 +6,17 @@ module.exports = (mongoose) => {
 
   const accessibilitySchema = {
     deaf: {
+      germanLanguage: { type: Boolean },
+      easyLanguage: { type: Boolean },
       subtitles: { type: Boolean },
       signLanguage: { type: Boolean },
       hearingAid: { type: Boolean },
       description: { type: String },
     },
     blind: {
-      german_language: { type: Boolean },
-      other_languages: [{ type: String }],
-      easy_language: { type: Boolean },
+      germanLanguage: { type: Boolean },
+      otherLanguages: [{ type: String }],
+      easyLanguage: { type: Boolean },
       braille: { type: Boolean },
       guidance: { type: Boolean },
       audioguide: { type: Boolean },
