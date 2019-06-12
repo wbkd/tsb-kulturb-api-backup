@@ -42,6 +42,7 @@ const accessibility = Joi.object({
   }),
   deaf: Joi.object({
     germanLanguage: Joi.bool(),
+    otherLanguages: Joi.array(),
     easyLanguage: Joi.bool(),
     subtitles: Joi.bool(),
     signLanguage: Joi.bool(),
