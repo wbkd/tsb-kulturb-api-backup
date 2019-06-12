@@ -1,6 +1,6 @@
 # TSB KulturB API
 
-Metadata generator API for TSB "Kultur B" project.
+API for TSB "Kultur B" project.
 
 The API server can handle user management, file uploads and the creation, modification, list and deletion of organisations and tags.
 

@@ -12,14 +12,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wbkd/tsb-metadata-generator.git"
+    "url": "git+https://github.com/wbkd/tsb-kulturb-api.git"
   },
   "author": "wbkd",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/wbkd/tsb-metadata-generator/issues"
+    "url": "https://github.com/wbkd/tsb-kulturb-api/issues"
   },
-  "homepage": "https://github.com/wbkd/tsb-metadata-generator#readme",
+  "homepage": "https://github.com/wbkd/tsb-kulturb-api#readme",
   "dependencies": {
     "aws-sdk": "^2.387.0",
     "bcrypt": "^3.0.3",
