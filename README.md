@@ -1,4 +1,4 @@
-# Metadata generator
+# TSB KulturB API
 
 Metadata generator API for TSB "Kultur B" project.
 
