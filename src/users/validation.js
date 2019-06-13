@@ -65,6 +65,16 @@ const relation = {
   },
 };
 
+const importer = {
+  payload: {
+    file: Joi.any().required(),
+  },
+};
+
+const exporter = {
+  query: find.query,
+};
+
 module.exports = {
   create,
   login,
@@ -75,4 +85,6 @@ module.exports = {
   changeRole,
   email,
   relation,
+  importer,
+  exporter,
 };

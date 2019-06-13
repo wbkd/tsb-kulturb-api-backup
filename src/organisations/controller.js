@@ -1,6 +1,6 @@
 const Bottleneck = require('bottleneck');
-const csv = require('./utils/csv');
-const osm = require('./utils/osm');
+const csv = require('../utils/csv');
+const osm = require('../utils/osm');
 
 module.exports = class Controller {
   constructor(service) {

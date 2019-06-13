@@ -32,13 +32,7 @@ module.exports = class Service {
     const fields = options.fields
       ? options.fields
         .map(field => ({ [field]: 1 }))
-        .reduce((acc, curr) => Object.assign(acc, curr), {
-          tags: 0,
-          users: 0,
-          images: 0,
-          venues: 0,
-          _id: 0,
-        })
+        .reduce((acc, curr) => Object.assign(acc, curr), {})
       : {};
 
     const data = await this.db.find(

@@ -10,7 +10,10 @@ redactyl.setText('');
 const omitCredentials = async (request, h) => {
   const { response } = request;
   if (!response.source) return response;
-  return redactyl.redact(response.source);
+  if (typeof response.source === 'object' && !Array.isArray(response.source)) {
+    return redactyl.redact(response.source);
+  }
+  return response;
 };
 
 const passwordStrength = async (request, h) => {

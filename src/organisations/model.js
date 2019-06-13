@@ -1,5 +1,5 @@
-const geocoder = require('./utils/geocode');
-const osm = require('./utils/osm');
+const geocoder = require('../utils/geocode');
+const osm = require('../utils/osm');
 
 module.exports = (mongoose) => {
   const { Schema } = mongoose;

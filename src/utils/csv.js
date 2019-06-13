@@ -33,16 +33,28 @@ const parse = (file, schema, tags) => {
 
 const format = data => csv.csvFormat(
   data.map(d => d._doc).map((d) => {
-    Object.keys(d).forEach((field) => {
-      if (d[field].toString() === '[object Object]') {
-        delete d[field];
+    const res = Object.assign({}, d);
+    Object.keys(res).forEach((field) => {
+      if (res[field].toString() === '[object Object]') {
+        delete res[field];
       }
     });
 
-    d.tags = d.tags.map(t => t.name);
-    d.location = d.location && d.location.coordinates;
-    delete d.venues;
-    return d;
+    if (d.tags) {
+      res.tags = d.tags.map(t => t.name);
+    }
+
+    if (d.location) {
+      res.location = d.location.coordinates;
+    }
+
+    if (d.organisation) {
+      res.organisation = d.organisation._id;
+      res.organisation_name = d.organisation.name;
+    }
+
+    delete res.venues;
+    return res;
   }),
 );
 

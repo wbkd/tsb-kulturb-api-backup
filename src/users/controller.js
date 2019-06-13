@@ -1,3 +1,6 @@
+const randomize = require('randomatic');
+const csv = require('../utils/csv');
+
 module.exports = class Controller {
   constructor(service) {
     this.service = service;
@@ -209,5 +212,50 @@ module.exports = class Controller {
     if (request.method === 'delete') {
       return this.service.removeRelation(_id, relation, relId);
     }
+  }
+
+  async importer(request, h) {
+    const { file } = request.payload;
+    const { schema } = this.service.db;
+
+    const data = csv.parse(file, schema);
+    const res = await Promise.all(
+      data
+        .filter(entry => entry.email)
+        .map(async (entry) => {
+          entry.verified = true;
+          if (!entry.password) {
+            entry.password = randomize('Aa0!', 8);
+          }
+
+          delete entry.organisation_name;
+
+          try {
+            const created = await this.service.create(entry)
+            created.password = entry.password;
+            return created;
+          } catch (err) {
+            return undefined;
+          }
+        }),
+    );
+
+    return csv.format(res.filter(entry => entry));
+  }
+
+  async exporter(request, h) {
+    request.query.limit = 0;
+    request.query.fields = ['verified', 'email', 'role', 'organisation'];
+    const { data } = await this.find(request);
+    let { data: organisations } = await request.server.plugins.organisations.controller
+      .find({ query: { limit: 0, fields: ['_id', 'name'] } });
+
+    organisations = organisations
+      .map(({ _id, name }) => ({ _doc: { organisation: { _id, name } } }));
+
+    const formatted = csv.format([...data, ...organisations]);
+    return h.response(formatted)
+      .header('Content-type', 'text/csv')
+      .header('Content-Disposition', 'attachment; filename=nutzer.csv');
   }
 };
