@@ -197,8 +197,10 @@ module.exports = (controller, validation) => [
     handler: controller.exporter,
     config: {
       validate: validation.exporter,
-      auth: false,
       tags: ['api'],
+      plugins: {
+        hapiAuthorization: { role: 'ADMIN' },
+      },
     },
   },
 ];
