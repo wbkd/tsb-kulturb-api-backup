@@ -231,7 +231,7 @@ module.exports = class Controller {
           delete entry.organisation_name;
 
           try {
-            const created = await this.service.create(entry)
+            const created = await this.service.create(entry);
             created.password = entry.password;
             return created;
           } catch (err) {
