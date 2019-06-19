@@ -1,7 +1,9 @@
 const csv = require('d3-dsv');
 
+const formatter = csv.dsvFormat(';');
+
 const parse = (file, schema, tags) => {
-  const data = csv.csvParse(file);
+  const data = formatter.parse(file);
 
   return data.map((entry) => {
     // convert venues, tags and types to array
@@ -31,7 +33,7 @@ const parse = (file, schema, tags) => {
   });
 };
 
-const format = data => csv.csvFormat(
+const format = data => formatter.format(
   data.map(d => d._doc).map((d) => {
     const res = Object.assign({}, d);
     Object.keys(res).forEach((field) => {
