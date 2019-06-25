@@ -63,6 +63,8 @@ const search = {
     name: Joi.string(),
     limit,
     skip,
+    sort,
+    order,
   },
 };
 

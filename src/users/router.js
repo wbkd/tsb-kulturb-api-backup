@@ -13,6 +13,7 @@ module.exports = (controller, validation) => [
     path: '/',
     handler: controller.find,
     config: {
+      validate: validation.find,
       auth: 'jwt',
       tags: ['api'],
       plugins: {

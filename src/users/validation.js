@@ -7,6 +7,10 @@ const token = Joi.string().required();
 const ObjectId = Joi.string().regex(/^[0-9a-fA-F]{24}$/);
 const role = Joi.string().valid(['USER', 'ADMIN']);
 const organisation = Joi.alternatives().try(Joi.object(), ObjectId);
+const limit = Joi.number();
+const skip = Joi.number();
+const sort = Joi.string();
+const order = Joi.string().valid(['ascend', 'descend']);
 
 const create = {
   payload: {
@@ -30,9 +34,28 @@ const refreshToken = {
   },
 };
 
+const search = {
+  query: {
+    name: Joi.string(),
+    role,
+    limit,
+    skip,
+    sort,
+    order,
+  },
+};
+
 const find = {
-  email: Joi.string().email(),
-  firstname,
+  query: {
+    email: Joi.string().email(),
+    role,
+    organisation,
+    firstname,
+    limit,
+    skip,
+    sort,
+    order,
+  },
 };
 
 const verify = {
@@ -79,6 +102,7 @@ module.exports = {
   create,
   login,
   refreshToken,
+  search,
   find,
   verify,
   changePassword,
