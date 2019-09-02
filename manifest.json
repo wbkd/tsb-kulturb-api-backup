@@ -74,6 +74,12 @@
         }
       },
       {
+        "plugin": "./src/changes",
+        "routes": {
+          "prefix": "/api/v1/changes"
+        }
+      },
+      {
         "plugin": "hapi-pino",
         "options": {
           "prettyPrint": true,
