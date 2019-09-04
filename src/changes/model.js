@@ -5,11 +5,11 @@ module.exports = (mongoose) => {
   const Change = new Schema({
     create: { type: Boolean },
     meta: {
-      organisation: [{
+      organisation: {
         type: Schema.Types.ObjectId,
         ref: 'Organisation',
         autopopulate: true,
-      }],
+      },
     },
     data: Organisation.schema,
   }, { timestamps: true, toJSON: { virtuals: true } });
