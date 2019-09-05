@@ -37,7 +37,7 @@ const format = data => formatter.format(
   data.map(d => d._doc).map((d) => {
     const res = Object.assign({}, d);
     Object.keys(res).forEach((field) => {
-      if (res[field].toString() === '[object Object]') {
+      if (res[field] && res[field].toString() === '[object Object]') {
         delete res[field];
       }
     });

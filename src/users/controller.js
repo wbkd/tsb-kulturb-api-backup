@@ -247,13 +247,8 @@ module.exports = class Controller {
     request.query.limit = 0;
     request.query.fields = ['verified', 'email', 'role', 'organisation'];
     const { data } = await this.find(request);
-    let { data: organisations } = await request.server.plugins.organisations.controller
-      .find({ query: { limit: 0, fields: ['_id', 'name'] } });
 
-    organisations = organisations
-      .map(({ _id, name }) => ({ _doc: { organisation: { _id, name } } }));
-
-    const formatted = csv.format([...data, ...organisations]);
+    const formatted = csv.format(data);
     return h.response(formatted)
       .header('Content-type', 'text/csv')
       .header('Content-Disposition', 'attachment; filename=nutzer.csv');
