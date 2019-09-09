@@ -50,4 +50,9 @@ npm start
 
 ## Import/Export
 
-Data can be imported or exported using the import/export endpoints or the UI provided by the [tsb-kulturb-cms](https://github.com/wbkd/tsb-kulturb-cms) project.
+Data can be imported or exported using the import/export endpoints or the UI provided by the [technologiestiftung/kulturB-cms](https://github.com/technologiestiftung/kulturB-cms) project.
+
+## See also
+
+* [technologiestiftung/kulturB-cms](https://github.com/technologiestiftung/kulturB-cms) - the content management system for the culture locations
+* [technologiestiftung/kulturB-api](https://github.com/technologiestiftung/kulturB-karte) - a map visualising the data
