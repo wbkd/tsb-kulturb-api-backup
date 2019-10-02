@@ -33,6 +33,9 @@ module.exports = (controller, validation) => [
     config: {
       validate: validation.create,
       auth: false,
+      plugins: {
+        policies: ['sendNotification'],
+      },
     },
   }, {
     method: 'PUT',
