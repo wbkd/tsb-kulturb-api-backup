@@ -1,6 +1,7 @@
 const Joi = require('joi');
 const Organisation = require('../organisations/validation');
 
+const email = Joi.string().email().required();
 const ObjectId = Joi.string().regex(/^[0-9a-fA-F]{24}$/);
 const _id = ObjectId.required();
 const limit = Joi.number();
@@ -39,6 +40,7 @@ const findById = {
 const { create } = {
   meta: {
     organisation: _id,
+    email,
   },
   data: Organisation,
 };

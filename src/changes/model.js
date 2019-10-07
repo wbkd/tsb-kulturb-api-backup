@@ -10,6 +10,11 @@ module.exports = (mongoose) => {
         ref: 'Organisation',
         autopopulate: true,
       },
+      email: {
+        type: String,
+        lowercase: true,
+        required: true,
+      },
     },
     data: Organisation.schema,
   }, { timestamps: true, toJSON: { virtuals: true } });
