@@ -53,6 +53,7 @@
     "randomatic": "^3.1.1",
     "redactyl.js": "^1.2.0",
     "rejoice": "^5.0.1",
+    "rfc6902": "^3.0.4",
     "vision": "^5.4.4"
   },
   "devDependencies": {

@@ -31,9 +31,26 @@ const verify = (transporter, user) => async (address, token) => {
   }
 };
 
+const notify = (transporter, user) => async (url, replyTo, address = user) => {
+  try {
+    const mailOptions = {
+      from: `"Admin" <${user}>`,
+      to: address || user,
+      replyTo,
+      subject: 'New change(s) proposed',
+      text: `New change(s) proposed, see them at ${url}`,
+      html: `New change(s) proposed, see them <a href="${url}">here</a>`,
+    };
+    transporter.sendMail(mailOptions);
+  } catch (err) {
+    console.error('Error sending notification email to:', address);
+  }
+};
+
+
 const register = (server, options) => {
   const host = options.host || 'smtp.';
-  const port = options.port || 587;
+  const port = options.port || 465;
   const secure = options.secure || true;
   const user = options.user || 'admin@webkid.io';
   const pass = options.pass || '';
@@ -54,6 +71,7 @@ const register = (server, options) => {
     server.method({ name: 'sendEmail', method: transporter.sendMail });
     server.decorate('request', 'sendVerificationEmail', verify(transporter, user));
     server.decorate('request', 'sendResetPasswordEmail', resetPassword(transporter, user));
+    server.decorate('request', 'sendNotificationEmail', notify(transporter, user));
   } catch (err) {
     console.error('Error configuring the SMTP server:', host);
   }

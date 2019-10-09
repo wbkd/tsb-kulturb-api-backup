@@ -33,6 +33,9 @@ module.exports = (controller, validation) => [
     config: {
       validate: validation.create,
       auth: false,
+      plugins: {
+        policies: ['sendNotification'],
+      },
     },
   }, {
     method: 'PUT',
@@ -93,6 +96,15 @@ module.exports = (controller, validation) => [
       plugins: {
         hapiAuthorization: { role: 'ADMIN' },
       },
+    },
+  }, {
+    method: 'GET',
+    path: '/{_id}/diff',
+    handler: controller.diff,
+    config: {
+      validate: validation.findById,
+      auth: false,
+      tags: ['api'],
     },
   },
 ];
