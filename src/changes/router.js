@@ -97,5 +97,14 @@ module.exports = (controller, validation) => [
         hapiAuthorization: { role: 'ADMIN' },
       },
     },
+  }, {
+    method: 'GET',
+    path: '/{_id}/diff',
+    handler: controller.diff,
+    config: {
+      validate: validation.findById,
+      auth: false,
+      tags: ['api'],
+    },
   },
 ];

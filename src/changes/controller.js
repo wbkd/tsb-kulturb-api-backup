@@ -1,3 +1,5 @@
+const { createPatch } = require('rfc6902');
+const { Pointer } = require('rfc6902/pointer');
 const csv = require('../utils/csv');
 
 module.exports = class Controller {
@@ -105,5 +107,23 @@ module.exports = class Controller {
     if (request.method === 'delete') {
       return this.service.removeRelation(_id, relation, relId);
     }
+  }
+
+  async diff(request) {
+    const { params, server } = request;
+    const { _id } = params;
+    const { meta, data } = await this.service.findById(_id);
+    const { organisation } = meta;
+    if (organisation) {
+      const orga = await server.plugins.organisations.service.findById(organisation);
+      const patch = createPatch(orga.toJSON(), data.toJSON());
+      const res = patch
+        .filter(change => !change.path.startsWith('/_id'))
+        .filter(change => !change.path.startsWith('/id'))
+        .filter(change => !change.path.startsWith('/__v'));
+
+      return res;
+    }
+    return [];
   }
 };
