@@ -11,9 +11,9 @@ mongoose.plugin(deleteEmptyValuesPlugin);
 
 const register = async (server, options) => {
   const url = options.url || 'mongodb://localhost:27017/test';
-
+  let db = null;
   try {
-    const db = await mongoose.connect(url, {
+    db = await mongoose.connect(url, {
       useCreateIndex: true,
       useNewUrlParser: true,
     });

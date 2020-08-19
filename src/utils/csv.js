@@ -1,6 +1,6 @@
 const csv = require('d3-dsv');
 
-const formatter = csv.dsvFormat(';');
+const formatter = csv.dsvFormat(',');
 
 const parse = (file, schema, tags) => {
   const data = formatter.parse(file);
@@ -26,39 +26,42 @@ const parse = (file, schema, tags) => {
     }
 
     if (entry.tags) {
-      entry.tags = tags.filter(tag => entry.tags.find(t => t === tag.name));
+      entry.tags = tags.filter((tag) => entry.tags.find((t) => t === tag.name));
     }
 
     return entry;
   });
 };
 
-const format = data => formatter.format(
-  data.map(d => d._doc).map((d) => {
-    const res = Object.assign({}, d);
-    Object.keys(res).forEach((field) => {
-      if (res[field] && res[field].toString() === '[object Object]') {
-        delete res[field];
-      }
-    });
+const format = (data) =>
+  formatter.format(
+    data
+      .map((d) => d._doc)
+      .map((d) => {
+        const res = Object.assign({}, d);
+        Object.keys(res).forEach((field) => {
+          if (res[field] && res[field].toString() === '[object Object]') {
+            delete res[field];
+          }
+        });
 
-    if (d.tags) {
-      res.tags = d.tags.map(t => t.name);
-    }
+        if (d.tags) {
+          res.tags = d.tags.map((t) => t.name);
+        }
 
-    if (d.location) {
-      res.location = d.location.coordinates;
-    }
+        if (d.location) {
+          res.location = d.location.coordinates;
+        }
 
-    if (d.organisation) {
-      res.organisation = d.organisation._id;
-      res.organisation_name = d.organisation.name;
-    }
+        if (d.organisation) {
+          res.organisation = d.organisation._id;
+          res.organisation_name = d.organisation.name;
+        }
 
-    delete res.venues;
-    return res;
-  }),
-);
+        delete res.venues;
+        return res;
+      })
+  );
 
 module.exports = {
   parse,

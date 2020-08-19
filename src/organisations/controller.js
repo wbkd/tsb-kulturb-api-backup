@@ -8,13 +8,7 @@ module.exports = class Controller {
   }
 
   search(request, h) {
-    const {
-      name,
-      limit = 10,
-      skip = 0,
-      sort = 'name',
-      order = 'ascend',
-    } = request.query;
+    const { name, limit = 10, skip = 0, sort = 'name', order = 'ascend' } = request.query;
 
     return this.service.search(name, {
       limit,
@@ -25,14 +19,7 @@ module.exports = class Controller {
   }
 
   find(request, h) {
-    const {
-      limit = 10,
-      skip = 0,
-      sort = 'name',
-      order = 'ascend',
-      fields,
-      ...filters
-    } = request.query;
+    const { limit = 10, skip = 0, sort = 'name', order = 'ascend', fields, ...filters } = request.query;
 
     return this.service.find(filters, {
       limit,
@@ -72,7 +59,7 @@ module.exports = class Controller {
     });
 
     const results = await limiter.schedule(() => {
-      const promises = entries.map(entry => osm.getOSMData(entry));
+      const promises = entries.map((entry) => osm.getOSMData(entry));
       return Promise.all(promises);
     });
 
@@ -81,13 +68,7 @@ module.exports = class Controller {
       if (result) {
         if (Object.keys(result) === ['_id']) return;
 
-        const {
-          accessibilityWheelchair,
-          accessibilityBlind,
-          accessibilityDeaf,
-          openingHours,
-          _id,
-        } = result;
+        const { accessibilityWheelchair, accessibilityBlind, accessibilityDeaf, openingHours, _id } = result;
 
         const accessibility = {};
         if (accessibilityWheelchair || accessibilityBlind || accessibilityDeaf) {
@@ -114,16 +95,17 @@ module.exports = class Controller {
   async importer(request, h) {
     const { file } = request.payload;
     const { schema } = this.service.db;
-    const { data: tags } = await request.server.plugins.tags.controller
-      .find({ query: { limit: 0 } });
+    const { data: tags } = await request.server.plugins.tags.controller.find({ query: { limit: 0 } });
 
     const data = csv.parse(file, schema, tags);
-    return Promise.all(data.map((entry) => {
-      if (entry._id) {
-        return this.service.update(entry._id, entry);
-      }
-      return this.service.create(entry);
-    }));
+    return Promise.all(
+      data.map((entry) => {
+        if (entry._id) {
+          return this.service.update(entry._id, entry);
+        }
+        return this.service.create(entry);
+      })
+    );
   }
 
   async exporter(request, h) {
@@ -131,7 +113,8 @@ module.exports = class Controller {
     const { data } = await this.find(request);
 
     const formatted = csv.format(data);
-    return h.response(formatted)
+    return h
+      .response(formatted)
       .header('Content-type', 'text/csv')
       .header('Content-Disposition', 'attachment; filename=kulturorte.csv');
   }

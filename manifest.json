@@ -3,9 +3,7 @@
     "port": "$env.PORT",
     "routes": {
       "cors": {
-        "origin": [
-          "*"
-        ],
+        "origin": ["*"],
         "additionalHeaders": ["cache-control", "x-requested-with", "authorization"]
       }
     },
