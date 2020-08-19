@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "The API server for the TSB KulturB project",
   "main": "src/index.js",
+  "engines": {
+    "node": "10.x"
+  },
   "directories": {
     "doc": "docs"
   },
